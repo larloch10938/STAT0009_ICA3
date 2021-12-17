@@ -1,31 +1,31 @@
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+# py_install("matplotlib")
 ```
-
 
 
 
 # Introduction
 
-* Made available 7 December.
-* Due UCL Week 23, 3 February 2021, 13:00 London Time.
-* This ICA consists of six questions for a total of $70$ points.
+* Made available UCL Week 16
+* Due UCL Week 24; 9 February 2022.
+* You are to work in groups of 2-4; there should be no overlap with your ICA2 groups.
+* This ICA consists of five questions, worth 65 points;
+* another 10 points will be given based on presentation, so that the total available points is 75.  
 * This ICA is worth 30 percent of your grade for this module.
-* Some questions will require you to write and run R code.
-* The ICA must be completed in R and typeset using R Markdown with Latex code, just like the way our module content is generated.
-* Please hand in the html file and the Rmd source file.
+* Many questions will require you to write and run R/Python code.
+* The ICA must be completed in R Markdown/Juptyer Notebook and typeset using  Markdown with Latex code, just like the way our module content is generated.  You can choose to use either R or Python.
+* Please hand in the html file and the Rmd/ipynb source file.
 * As usual, part of the grading will depend on the clarity and presentation of your solutions.
-*  Please do in groups of 3-4.
-*  UCL regulations state the you must have completely different groups for ICA2 and ICA3.
-*  You are to do this assignment within your declared groups, without any help from others.
+*  You are to do this assignment by yourselves, without any help from others.
 *  You are allowed to use any materials and code that was presented so far.
 *  Do not search the internet for answers to the ICA.
 *  Do not use any fancy code or packages imported from elsewhere.
 
 
 
-
-#  Plagiarism and collusion
+##  Plagiarism and collusion
 
 Please familarize yourself with [the following excerpt on plagiarism and collusion from the student handbook ](https://tsoo-math.github.io/ucl/Plagiarism-Collusion.pdf)
 
@@ -34,147 +34,93 @@ By ticking the submission declaration box in Moodle you are agreeing to the foll
 
 <br>
 
-**Declaration:** We are aware of the UCL Statistical Science Department's regulations on plagiarism for assessed coursework. We have read the guidelines in the student handbook and understand what constitutes plagiarism. We hereby affirm that the work we are submitting for this in-course assessment is entirely our own.
+**Declaration:** I am aware of the UCL Statistical Science Department's regulations on plagiarism for assessed coursework. I have read the guidelines in the student handbook and understand what constitutes plagiarism. I hereby affirm that the work I am submitting for this in-course assessment is entirely my own.
 
 
 
-# Anonymous Marking 
+## Anonymous Marking 
 
-Please do **not** write your names anywhere on the submission. Please include only your **student numbers** as the proxy identifier.
+Please do **not** write your name anywhere on the submission. Please include only your **student number** as the proxy identifier.
 
 
 
-# 1.)   It's your birthday. [10 points]
 
-You might recall a  proof that when there are only twenty-three people in a room, then with probability almost $1/2$, the room contains two people with  the same birth*day*,  under the assumptions that there are $365$ days in a year, and birthdays throughout the year are equally distributed, and the birthdays of the occupants of the room are independent.  
 
-Under these similar assumptions, let $p(n)$ be the probability that in a room of $n$ people that there are three people people that share the same birthday.  By running simulations:
+# Questions
 
-*  Plot an approximate  graph of $p(n)$.  [8 points]  
 
-*  Find $n$ such that $p(n) \approx 1/2$.  [2 points]
+## 1.) [10 points] Apery's constant 
 
+* [2 points] Prove (using calculus) that
 
+$$\zeta(3) = \sum_{n=1} ^{\infty} \frac{1}{n^3}  < \infty.$$
 
+* [6 points]  Consider the probability distribution $\mu$, where 
+$$\mu(n) = \frac{1}{\zeta(3)n^3}.$$
+Use the Metropolis algorithm to sample from $\mu$, so that you do not need to know the value of $\zeta(3)$.
 
+* [2 points]  Now that you can sample from $\mu$, use simulations to estimate the value of $\zeta(3)$.  
 
 
 
-# 2.)  Pretending $\pi$ has random digits and data processing. [10 points]
 
-*  Find or generate a million or so digits of $\pi$.  See for example you may use this [link](http://newton.ex.ac.uk/research/qsystems/collabs/pi/pi6.txt).  Here it is okay to use the internet to find basic importation functions or use fancy formulas for the digits of $\pi$.   [2 points]
 
-*  Process your digits so that they are in groups of $10$, so that you can pretend each group of $10$ is realization of a number that is uniformly distributed in $[0,1]$.  You might need to take special care of groups beginning with $0$.  [2 points]
+## 2.) [15 points] Bayesian statistics and MCMC
 
-*  Put everything into a single vector, where the first entry contains the number $0.1415926535$. [2 points]
+We say that a positive continuous random variable $X$ has the **inverse gamma** distribution with parameters $\alpha >0$ and $\beta >0$ if it has pdf given by
+	$$(y; \alpha, \beta) \mapsto \frac{\beta^{\alpha}}{\Gamma(\alpha)} y^{-\alpha -1} e^{\tfrac{-\beta}{y}}  \mathbf{1}[y >0],$$ where $\Gamma$ is the usual Gamma function.  	  
 
-*   Plot of histogram to check if they appear uniformly distributed. [2 points]
+We say that a positive continuous random variable $W$ has the **Scaled-Weibull distribution** with shape parameter $k$ and scale  parameter $\theta >0$ if it has pdf given by
+$$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  - \tfrac{w_1^{k}}{\theta }  ] .$$ 	
 
-*  Find the mean and variance of the *data* to make sure the data has been imported properly. [2 points]
+* [2 points] Let ${W} = (W_1, \ldots, W_n)$ be a random sample from the  Scaled-Weibull distribution with known shape parameter $k$ and  unknown scale parameter $\theta >0$.  Show that $t({W}) := \sum_{i=1} ^n W_i ^k$ is a sufficient statistic for $\theta$.
+	
+* [3 points] Fix $k >0$.   Let ${X} = (X_1, \ldots, X_n)$ be a random sample where the conditional distribution of $X_1$ given $\Theta = \theta$  has the  Scaled-Weibull distribution with shape  parameter $k$ and scale parameter $\theta$,  and $\Theta$ has the inverse gamma distribution with parameters $\alpha$ and $\beta$.   Given sample data $x=(x_1, x_2, \ldots, x_n)$.  Compute the posterior distribution $s(\theta|t(x))$ up to constant factors. 
 
+* [3 points] Identify the distribution of $s(\theta|t(x))$.
 
+*  [4 points] Now *pretend* you could not identify it, and could not deduce exact constant factors.   For the simple case, where $\alpha =2$,  $\beta=3$, $n=3$, and  $x_1=2, x_2=4, x_3=6$, sample from $s(\theta|t(x))$ using the Metropolis algorithm. 
 
+*  [3 points] Plot independent samples in a probability histogram and compare with the true result.
 
 
 
 
-# 3.)  Using $\pi$ for continuous-time Markov chains. [20 points]
 
+## 3.) [15 points] A Poisson process process on a perimeter of a semi-circle
 
-Consider the continuous-time Markov chain $X$ with three state $\{1,2,3\}$ with $Q$ matrix given by
+Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upper half of the circle given by $x^2+y^2 =1$.  Here, $\Gamma$ is not the Gamma function.   Consider the point process $\Upsilon$ given by the  projection of $\Gamma$ onto the $x$-axis; that is, if $\Gamma$ had $n$ points and they are given by $(x_1, y_1), \ldots, (x_n, y_n)$, then the points of  $\Upsilon$ are just the $x$-coordinates  $x_1, \ldots, x_n$.   
 
+*  [5 points] Write code to simulate $\Gamma$ and $\Upsilon$.    Graphically display a sample realization of these point processes.
 
+*   [5 points] Demonstrate using simulations that $\Upsilon$ is *not* a homogeneous Poisson point process on $[-1,1]$.
 
-```{r}
-Q <- matrix(c(-5,2,3, 2,-3,1, 2,6,-8), nrow =3)
-Q = t(Q)
-Q
-```
+*  [5 points]  Show analytically that $\Upsilon$ cannot be a homogeneous Poisson point process on $[-1,1]$.
 
-*  Use linear algebra and R to find the stationary distribution $\lambda$.  You may need to import a package.   [2 points]
 
-*  Write code, which uses **only** the *randomization* provided by the digits of $\pi$  so that you obtain the state of the chain at time $t$, starting at a state $i$.  [14 points]
+## 4.)  [15 points] The transition rate matrix
 
-*   For $t=35$, and starting at state $3$,  by running a large number of simulation, find the average number of times the Markov chain is in each of the states at time $t$.  You may find that you may need to be more economical, given the number of digits of $\pi$ that were imported.  [2 points]
+You are given the the sample data from an irreducible  continuous-time Markov chain.  The sample data includes the jump times $(0,j_1, \ldots, j_n)$ and states $(s_0, s_1, \ldots, s_n)$; here at time $j_i$ the Markov chain jumps into state $s_i$ and stays there until the next jump which occurs at time $j_{i+1}$.
 
+* [8 points]  When $n$ is large, give a method for estimating the transition rate matrix, also referred to as the $Q$ matrix.  Explain why your estimate is reasonable.
 
-*  Discuss your results, as it relates to the theory you learned, and the randomization obtained from $\pi$. [2 points]  
+* [7 points] Import the data from the file [Q.txt](https://tsoo-math.github.io/ucl2/Q.txt) and use this data and your method above to estimate the $Q$ matrix.
 
 
-In your coding, you may need a mechanism  to keep track of which bits of the randomness from $\pi$ have already been used; in order to facilitate this, you may need a function to be able to change the value of a variable that exists globally outside definitions of functions;  the following example illustrates how to accomplish this:
 
-```{r}
-counterr =0
 
-example <- function(t){
-counterr <<- counterr +1
+##  5.) [10 points] Queues 
 
-t+5
-}
+Suppose you  have Poisson arrivals, with intensity $6$.  You are given the following two options. Option 1: we treat it like a $M(6)/M(8)/1$ system- the items are served by exponentially at rate $8$.  Option 2:  each item is painted red or blue independently with probability $\tfrac{1}{2}$;  the coloured items report to different queues, with  the red items are served exponentially at rate $4$, and the blue items served exponentially at rate $4$.  
 
-example(1)
-example(10)
-counterr
-```
+* [5 points] Run simulations to identify   the stationary distributions of the items in each of the two options.    Which option, on average, has more items in it?
 
+*  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
 
 
+# Endnotes
 
-
-# 4.)   Response time in M/M/1 queue.  [10 points]
-
-Consider a $M(\lambda) / M(\mu) /1$ queue, where $\lambda < \mu$ and the queue is started at stationarity so that the number of items in the system at any time $t$, has the same distribution.  Consider an arrival at some time $t$.  
-
-*   Show that the total time it spends in the system is exponential with rate $\mu - \lambda$, by using the *brute force* exercise in [HW8](https://tsoo-math.github.io/ucl/QHW8-sols.html).   [8 points]
-
-*   Show that this is consistent with Little's law.  [2 points]
-
-
-
-
-
-
-
-
-# 5.)  Queues in series. [10 points]
-
-Suppose that customers arrive at a queue  with independent exponential service times of rate $2$, and when they depart, they enter another queue also with independent exponential service times, but at rate $5$.   Assume that the customers enter the first queue arrive as a Poisson process of rate $1$.   Let $Q_1(t)$ and $Q_2(t)$ be the number of customers in the respective queues at time $t$.  Verify by simulations that the stationary distribution for $(Q_1, Q_2)$ is given  by a  *product* of geometric distributions.  
-
-
-
-
-
-# 6.)   Estimating the transition matrix for a Markov chain.  [10 points]
-
-Let $X$ be an irreducible and aperiodic matrix on a finite number of states $S$.  For each $a, s \in S$, let 
-
-$$N_{as}^n = \sum_{i=0} ^n   \mathbf{1}[X_i=a, X_{i+1} =s].$$
-
-
-*  Using a version of the law of large numbers that you conjectured in [HW 3](https://tsoo-math.github.io/ucl/QHW3-sols.html), argue  that 
-
-$$T_{n} =  \frac{N_{ab} ^n}{  \sum_{s \in S}  N_{as}^n }$$ gives a sequence of  consistent estimators for $p_{ab}$.  [5 points] 
-
-
-*  Is $T_n$ unbiased?  If not, what additional assumptions are needed to ensure that it is?  [2 points]
-
-*  Suppose that you know all the values of the transition matrix, except the values $p_{ab}$ and $p_{ac}$.  Also assume you know that the Markov chain has a starting distribution $\rho$.   Find the maximum likelihood estimate of the values $p_{ab}$ and $p_{ac}$, given a realization 
-$$X=x=(x_0, x_1, \ldots, x_n).$$  
-It is permissible to review your previous module  notes on mle estimation.  [3 points]
-
-
-
-
-
-
-
-#  Version: `r format(Sys.time(), '%d %B %Y')`
-  * [Rmd Source](https://tsoo-math.github.io/ucl/ica3-stat9-release.Rmd)
-
-
-
-<br>
-<br>
-<br>
+* Version: `r format(Sys.time(), '%d %B %Y')`
+* [Rmd Source](https://tsoo-math.github.io/ucl2/2021-ica3-stat9-release.Rmd)
 
 
