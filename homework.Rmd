@@ -3,7 +3,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
 # py_install("matplotlib")
 ```
-
+## Student Numbers
+SN: 18014015
+SN:
+sN:
+SN:
 # Introduction
 
 * Made available UCL Week 16
@@ -41,7 +45,10 @@ Use the Metropolis algorithm to sample from $\mu$, so that you do not need to kn
 * [2 points]  Now that you can sample from $\mu$, use simulations to estimate the value of $\zeta(3)$.  
 
 
-
+## Answer:
+* We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks the series as an integral (an integral is the continuous version of the discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
+$$\int_{1}^{\infty} \frac{1}{x^{3}} \,dx \ = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{x^{3}} \,dx = \lim_{t \to \infty}  \frac{1}{-2x^{2}}\Biggr|_{x=1}^{t} = \frac{1}{2} < \infty $$
+The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as required.
 
 
 ## 2.) [15 points] Bayesian statistics and MCMC
