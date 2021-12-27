@@ -50,6 +50,58 @@ Use the Metropolis algorithm to sample from $\mu$, so that you do not need to kn
 $$\int_{1}^{\infty} \frac{1}{x^{3}} \,dx \ = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{x^{3}} \,dx = \lim_{t \to \infty}  \frac{1}{-2x^{2}}\Biggr|_{x=1}^{t} = \frac{1}{2} < \infty $$
 The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as required.
 
+* From Week 9 Exercises in class, we were introduced to the Metropolis-Hastings algorithm. 
+```{r}
+## Aperys constant
+s = 0
+for (i in 1:1000){
+  s <- s + 1/(i^3)
+  
+}
+s
+
+
+h <- function(x){
+  z=0
+  if (x > 0){
+    z = 1/(x^3)
+  }
+  z
+}
+
+Yq <- function(x){
+  y = rnorm(1,x,1) ##Not sure about distribution choice here
+  y
+}
+
+a <- function(j, i){
+  m = min(c(h(j)/h(i),1))
+  m
+}
+
+
+metro <- function(n){
+  x = 0.5
+  for (k in 1:n){
+    i = x[length(x)]
+    j = Yq(i)
+    p = a(j,i)
+    x = c(x,i)
+    if (rbinom(1,1,p) ==1){ ##similarly here for the distribution choice
+      x[length(x)] <- j
+    }
+  }
+  x
+}
+
+t = replicate(500, metro(500))
+hist(t, prob=TRUE, breaks = 100)
+
+x = seq(0, 5, by = 0.1)
+curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
+
+```
+
 
 ## 2.) [15 points] Bayesian statistics and MCMC
 
