@@ -5,7 +5,7 @@ library(reticulate)
 ```
 ## Student Numbers
 SN: 18014015
-SN:
+SN: 21169367
 sN:
 SN:
 # Introduction
@@ -146,7 +146,29 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 *   [5 points] Demonstrate using simulations that $\Upsilon$ is *not* a homogeneous Poisson point process on $[-1,1]$.
 
 *  [5 points]  Show analytically that $\Upsilon$ cannot be a homogeneous Poisson point process on $[-1,1]$.
+```{r}
+#function to define point on the upper circle
+point <- function(){
+  z=2
+  while(length(z)==1){
+    x = 2*runif(1) -1
+    y = runif(1)
+    if (x^2 + y^2 == 1) { z<-c(x,y)}
+  }
+  z
+}
+#replicate to create multiple points
+re <- replicate(rpois(1,2*pi),point())
 
+#plot points to get upper half circle, this is Gamma
+plot(re[1,], re[2,], xlim=c(-1.1,1.1), ylim=c(-0.1,1.1))
+
+#plot to get projection onto x axis, this is Upsilon
+plot(re[1,],rep(0,length(re[1,])))
+
+#To show non-homogeneity, replicate this 1000 times, split into 2 intervals, take
+#means, means should differ. See ICA 1.
+```
 
 ## 4.)  [15 points] The transition rate matrix
 
