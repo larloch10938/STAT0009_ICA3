@@ -6,7 +6,7 @@ library(reticulate)
 ## Student Numbers
 SN: 18014015
 SN: 21169367
-sN:
+sN: 19011782
 SN:
 # Introduction
 
@@ -213,6 +213,55 @@ Suppose you  have Poisson arrivals, with intensity $6$.  You are given the follo
 
 *  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
 
+```{r}
+opt <- function(t){
+  inter = rexp(1,6)
+  arr = inter
+  
+  while(t > arr[length(arr)]){
+    inter <- c(inter, rexp(1,6))
+    arr <- cumsum(inter)
+  }
+  
+  L = length(inter)
+  service = rexp(L,8)
+  
+  output <- arr[1] + service[1]
+  for (i in 1:(L - 1)){ 
+    if(arr[i + 1] < output[i]){output <- c(output, output[i] + service[i + 1])}
+    if(arr[i + 1] > output[i]){output <- c(output, arr[i + 1] + service[i + 1])}
+  }
+  
+  output <- output[-L]
+
+  n = sum(output > t)
+  
+}
+
+opt2 <- function(t){
+  inter = rexp(1,6)
+  arr = inter
+  x <- sample(c(0,1), n, replace = TRUE, prob = c(0.5,0.5))
+  if (x == 0){service1 = rexp(L, 4)}
+  output1 <- arr[1] + service1[1]
+  for (i in 1:(L - 1)){  
+    if(arr[i + 1] < output1[i]){output1 <- c(output1, output1[i] + service1[i + 1])}
+    if(arr[i + 1] > output1[i]){output1 <- c(output1, arr[i + 1] + service1[i + 1])}
+  }
+  if (x == 1){service2 = rexp(L, 4)}
+  output2 <- arr[1] + service2[1]
+  for (i in 1:(L - 1)){ 
+    if(arr[i + 1] < output2[i]){output2 <- c(output2, output2[i] + service2[i + 1])}
+    if(arr[i + 1] > output2[i]){output2 <- c(output2, arr[i + 1] + service2[i + 1])}
+  }
+  output1 <- output1[-L]
+  output2 <- output2[-L]
+  
+  n1 = sum(output1 > t)
+  n2 = sum(output2 > t)
+  c(n1,n2)
+}
+```
 
 # Endnotes
 
