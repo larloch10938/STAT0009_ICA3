@@ -157,7 +157,7 @@ point <- function(){
   }
   z
 }
-#replicate to create multiple points
+#replicate to create multiple points - this bit doesn't run bc of the if statement
 re <- replicate(rpois(1,2*pi),point())
 
 #plot points to get upper half circle, this is Gamma
