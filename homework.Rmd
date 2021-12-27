@@ -109,7 +109,9 @@ So, the sample mean of the distribution is the reciprocal of Apery's constant?
 
 ```{r}
 ## code to do here
-
+t = replicate(500, metro(500))
+mean = sum(t)/500
+1/mean
 ```
 
 
