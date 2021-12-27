@@ -102,6 +102,16 @@ curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
 ```
 
+* To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0$ and then find the sample mean of the distribution which would equate to:
+$$\int_{1}^{\infty} \frac{x}{\zeta(3) x^{3}} \,dx = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{\zeta(3) x^{2}} \,dx = \lim_{t \to \infty}  \frac{1}{-\zeta(3)x}\Biggr|_{x=1}^{t} = -\frac{1}{\zeta(3)}.$$
+
+So, the sample mean of the distribution is the reciprocal of Apery's constant?
+
+```{r}
+## code to do here
+
+```
+
 
 ## 2.) [15 points] Bayesian statistics and MCMC
 
