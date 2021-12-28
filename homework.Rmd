@@ -243,22 +243,41 @@ opt <- function(t){
   n = sum(output > t)
   
 }
+x= replicate(1000, opt(600))
+b = seq(-1,max(x)+1, by=1)
+hist(x, prob=TRUE, breaks=b)
+p=1-0.75
+mean(x) - (  (1-p)/p )
+testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
+          ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
+          sum(x==4)/1000 - dgeom(4,p))
 
-opt2 <- function(t){
+opt2 <- function(t,n){
   inter = rexp(1,6)
   arr = inter
-  x <- sample(c(0,1), n, replace = TRUE, prob = c(0.5,0.5))
-  if (x == 0){service1 = rexp(L, 4)}
+  
+  while(t > arr[length(arr)]){
+    inter <-c(inter, rexp(1,1))
+    arr <- cumsum(inter)
+  }
+  L = length(inter)
+  
+  item <- sample(c(0,1), n, replace = TRUE, prob = c(0.5,0.5))
+  for (j in 1:n){
+    
+  while (item[j] == 0){service1 = rexp(L, 4)}
   output1 <- arr[1] + service1[1]
   for (i in 1:(L - 1)){  
     if(arr[i + 1] < output1[i]){output1 <- c(output1, output1[i] + service1[i + 1])}
     if(arr[i + 1] > output1[i]){output1 <- c(output1, arr[i + 1] + service1[i + 1])}
   }
-  if (x == 1){service2 = rexp(L, 4)}
+  
+  while (item[j] == 1){service2 = rexp(L, 4)}
   output2 <- arr[1] + service2[1]
   for (i in 1:(L - 1)){ 
     if(arr[i + 1] < output2[i]){output2 <- c(output2, output2[i] + service2[i + 1])}
     if(arr[i + 1] > output2[i]){output2 <- c(output2, arr[i + 1] + service2[i + 1])}
+  }
   }
   output1 <- output1[-L]
   output2 <- output2[-L]
