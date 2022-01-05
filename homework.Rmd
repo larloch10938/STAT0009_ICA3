@@ -6,17 +6,16 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-# py_install("matplotlib")
 ```
 ## Student Numbers
 SN: 18014015
 SN: 21169367
-sN: 19011782
-SN:
+SN: 19011782
+SN: 20117921
+
 # Introduction
 
-* Made available UCL Week 16
-* Due UCL Week 24; 9 February 2022.
+* Due 9 February 2022.
 * You are to work in groups of 2-4; there should be no overlap with your ICA2 groups.
 * This ICA consists of five questions, worth 65 points;
 * another 10 points will be given based on presentation, so that the total available points is 75.  
@@ -29,10 +28,6 @@ SN:
 *  You are allowed to use any materials and code that was presented so far.
 *  Do not search the internet for answers to the ICA.
 *  Do not use any fancy code or packages imported from elsewhere.
-
-## Anonymous Marking 
-
-Please do **not** write your name anywhere on the submission. Please include only your **student number** as the proxy identifier.
 
 # Questions
 
@@ -212,8 +207,12 @@ You are given the the sample data from an irreducible  continuous-time Markov ch
 
 * [7 points] Import the data from the file [Q.txt](https://tsoo-math.github.io/ucl2/Q.txt) and use this data and your method above to estimate the $Q$ matrix.
 
-```{r}
+## Answer:
+```{r, message=FALSE}
 library(tidyverse)
+```
+
+```{r}
 data <- read.table(url("https://tsoo-math.github.io/ucl2/Q.txt"), header = TRUE, sep = ",") %>% 
   mutate(previous_state = lag(states)) %>% 
   mutate(jump_time = time - lag(time))
