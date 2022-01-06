@@ -216,8 +216,18 @@ You are given the the sample data from an irreducible  continuous-time Markov ch
 * [7 points] Import the data from the file [Q.txt](https://tsoo-math.github.io/ucl2/Q.txt) and use this data and your method above to estimate the $Q$ matrix.
 
 ## Answer:
+
+When $n$ is large we can use the generated data to compute the average amount of time spent in a specific state. We can also compute the average amount of time spent in a state before jumping to another specific state. We can define the jumping time as the product of the intensity of the jumping process in one state and the probability of moving into that specific state.
+
+We define $t(i, j) = \lambda(i)m_{i,j}$ where $\lambda(i)$ is the intensity of the process in state $i$ and $m_{i,j}$ is the transition probability. Since we are able to obtain the long run $t(i, j)$ jumping times we can them use to compute $m_{i,j}$ and plugging those into the formula seen in lesson (https://tsoo-math.github.io/ucl/continuous-timeMC.html) we can derive $q_{i,j}$ and therefore the overall $Q$ matrix.
+
+Finally if we normalize the amount of time spent in each state we will be able to get the stationary distribution. We can than use the $\pi Q = 0$ to verify our results.
+
 ```{r, message=FALSE}
 library(tidyverse)
+t <- matrix(data=list(),nrow=3,ncol=3)
+m <- matrix(data=list(),nrow=3,ncol=3)
+q <- matrix(data=list(),nrow=3,ncol=3)
 ```
 
 ```{r}
@@ -229,20 +239,34 @@ head(data)
 state_list <- data %>%
   distinct(states) %>% 
   pull()
-# what is the average time to go from state 1 to state 2?
+# by running the below code we get the amount of time spent on each state
+data %>% 
+  group_by(previous_state) %>% 
+  summarize(mean(jump_time)) %>% 
+  drop_na()
+# what is the average time to go from state i to state j?
 for (i in state_list) {
   for (j in state_list){
     avg_time <- data %>% 
-      filter(states == i & previous_state == j) %>% 
+      filter(states == j & previous_state == i) %>% 
       group_by(states, previous_state) %>% 
       summarize(mean(jump_time), .groups = 'drop') %>% 
       ungroup() %>% 
       pull("mean(jump_time)")
-    print(paste0("Average time spent jumping from state ", i, " to state ", j,
-                 ": ", avg_time))
+    t[[i,j]] <- avg_time
   }
 }
-
+print(paste0("Average time spent jumping from state to state:"))
+print(t)
+for (n in state_list) {
+  t_1 <- if(n == 1) {0} else {t[[n, 5 - n]]}
+  t_2 <- if(n == 2) {0} else {t[[n, 4 - n]]}
+  t_3 <- if(n == 3) {0} else {t[[n, 3 - n]]}
+  m[[n,1]] <- if(n == 1) {0} else {1 / (1 + t_1/t[[n,1]])}
+  m[[n,2]] <- if(n == 2) {0} else {1 / (1 + t_2/t[[n,2]])}
+  m[[n,3]] <- if(n == 3) {0} else {1 / (1 + t_3/t[[n,3]])}
+}
+print(m)
 ```
 
 
