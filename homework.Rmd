@@ -259,7 +259,7 @@ opt <- function(t){
   inter = rexp(1,6)
   arr = inter
   
-  while(t > arr[length(arr)]){
+  while(t > arr[length(arr)]){  ## x[length(x)] is to extract the last data in x
     inter <- c(inter, rexp(1,6))
     arr <- cumsum(inter)
   }
@@ -268,19 +268,19 @@ opt <- function(t){
   service = rexp(L,8)
   
   output <- arr[1] + service[1]
-  for (i in 1:(L - 1)){ 
+  for (i in 1:(L - 1)){  ## whether the server's service time less than the customer arrival time 
     if(arr[i + 1] < output[i]){output <- c(output, output[i] + service[i + 1])}
     if(arr[i + 1] > output[i]){output <- c(output, arr[i + 1] + service[i + 1])}
   }
   
-  output <- output[-L]
+  output <- output[-L] ## delete output[L]
 
   n = sum(output > t)
   
 }
-x= replicate(1000, opt(600))
+x= replicate(1000, opt(600)) ## simulation by large number
 b = seq(-1,max(x)+1, by=1)
-hist(x, prob=TRUE, breaks=b)
+hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
 p=1-0.75
 mean(x) - (  (1-p)/p )
 testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
@@ -300,18 +300,20 @@ opt2 <- function(t,n){
   item <- sample(c(0,1), n, replace = TRUE, prob = c(0.5,0.5))
   for (j in 1:n){
     
-  while (item[j] == 0){service1 = rexp(L, 4)}
+  while (item[j] == 0){service1 = rexp(L, 4) ## queue of red items
   output1 <- arr[1] + service1[1]
   for (i in 1:(L - 1)){  
     if(arr[i + 1] < output1[i]){output1 <- c(output1, output1[i] + service1[i + 1])}
     if(arr[i + 1] > output1[i]){output1 <- c(output1, arr[i + 1] + service1[i + 1])}
   }
+  }
   
-  while (item[j] == 1){service2 = rexp(L, 4)}
+  while (item[j] == 1){service2 = rexp(L, 4) ## queue of blue items
   output2 <- arr[1] + service2[1]
   for (i in 1:(L - 1)){ 
     if(arr[i + 1] < output2[i]){output2 <- c(output2, output2[i] + service2[i + 1])}
     if(arr[i + 1] > output2[i]){output2 <- c(output2, arr[i + 1] + service2[i + 1])}
+  }
   }
   }
   output1 <- output1[-L]
@@ -321,6 +323,15 @@ opt2 <- function(t,n){
   n2 = sum(output2 > t)
   c(n1,n2)
 }
+
+
+y= replicate(10, opt2(600,10))
+y1 = y[1,]
+y2 = y[2,]
+b1 = seq(-1,max(y1)+1, by=1)
+b2 = seq(-1,max(y2)+1, by=1)
+hist(y1, prob=TRUE, breaks=b1)
+
 ```
 
 # Endnotes
