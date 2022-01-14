@@ -311,50 +311,63 @@ testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
           ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
           sum(x==4)/1000 - dgeom(4,p))
 
-opt2 <- function(t,n){
+opt2 <- function(t){
   inter = rexp(1,6)
   arr = inter
   
   while(t > arr[length(arr)]){
-    inter <-c(inter, rexp(1,1))
+    inter <- c(inter, rexp(1,6))
     arr <- cumsum(inter)
   }
   L = length(inter)
   
-  item <- sample(c(0,1), n, replace = TRUE, prob = c(0.5,0.5))
-  for (j in 1:n){
+  colitem = sample(c(0,1), length(arr), replace = TRUE, prob = c(0.5,0.5))
+  
+  arrred <- 0
+  arrblue <- 0
+  for (i in 1:L) {
+ 
+    if(colitem[i] == 0){arrred <- c(arrred, arr[i])}
+    if(colitem[i] == 1){arrblue <- c(arrblue, arr[i])}
+  }     
+    arrred
+    arrblue
     
-  while (item[j] == 0){service1 = rexp(L, 4) ## queue of red items
-  output1 <- arr[1] + service1[1]
-  for (i in 1:(L - 1)){  
-    if(arr[i + 1] < output1[i]){output1 <- c(output1, output1[i] + service1[i + 1])}
-    if(arr[i + 1] > output1[i]){output1 <- c(output1, arr[i + 1] + service1[i + 1])}
-  }
-  }
+  Lr = length(arrred)
+  servicered = rexp(Lr,4)
   
-  while (item[j] == 1){service2 = rexp(L, 4) ## queue of blue items
-  output2 <- arr[1] + service2[1]
-  for (i in 1:(L - 1)){ 
-    if(arr[i + 1] < output2[i]){output2 <- c(output2, output2[i] + service2[i + 1])}
-    if(arr[i + 1] > output2[i]){output2 <- c(output2, arr[i + 1] + service2[i + 1])}
+  outputred <- arrred[1] + servicered[1]
+  for (j in 1:(Lr - 1)){ 
+    if(arrred[j + 1] < outputred[j]){outputred <- c(outputred, outputred[j] + servicered[j + 1])}
+    if(arrred[j + 1] > outputred[j]){outputred <- c(outputred, arrred[j + 1] + servicered[j + 1])}
   }
-  }
-  }
-  output1 <- output1[-L]
-  output2 <- output2[-L]
+  outputred <- outputred[-L]  
   
-  n1 = sum(output1 > t)
-  n2 = sum(output2 > t)
-  c(n1,n2)
+  Lb = length(arrblue)
+  serviceblue = rexp(Lb,4)  
+  outputblue <- arrblue[1] + serviceblue[1]
+  for (m in 1:(Lb - 1)){  
+    if(arrblue[m + 1] < outputblue[m]){outputblue <- c(outputblue, outputblue[m] + serviceblue[m + 1])}
+    if(arrblue[m + 1] > outputblue[m]){outputblue <- c(outputblue, arrblue[m + 1] + serviceblue[m + 1])}
+  }
+  outputblue <- outputblue[-L]  
+  nr = sum(outputred > t)
+  nb = sum(outputblue > t)
+  c(nr,nb)
 }
 
 
-y= replicate(10, opt2(600,10))
-y1 = y[1,]
-y2 = y[2,]
-b1 = seq(-1,max(y1)+1, by=1)
-b2 = seq(-1,max(y2)+1, by=1)
-hist(y1, prob=TRUE, breaks=b1)
+x= replicate(1000, opt(600)) ## simulation by large number
+x1 = x[1,]
+x2 = x[2,]
+b1 = seq(-1,max(x1)+1, by=1)
+b2 = seq(-1,max(x2)+1, by=1)
+hist(x1, prob=TRUE, breaks=b1) ## draw a diagrom to assume the distribution
+p=1-0.75
+mean(x) - (  (1-p)/p )
+testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
+          ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
+          sum(x==4)/1000 - dgeom(4,p))
 
 ```
 
