@@ -46,7 +46,7 @@ Use the Metropolis algorithm to sample from $\mu$, so that you do not need to kn
 
 
 ## Answer:
-* We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks the series as an integral (an integral is the continuous version of a discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
+* We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks at the series as an integral (an integral is the continuous version of a discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
 $$\int_{1}^{\infty} \frac{1}{x^{3}} \,dx \ = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{x^{3}} \,dx = \lim_{t \to \infty}  \frac{1}{-2x^{2}}\Biggr|_{x=1}^{x=t} = \frac{1}{2} < \infty $$
 The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as required.
 
@@ -81,13 +81,13 @@ a <- function(j, i){
 
 #Code idea from Week 9 exercises
 metro <- function(n){
-  x = 0.5
+  x = 1
   for (k in 1:n){
     i = x[length(x)]
     j = Yq(i)
     p = a(j,i)
     x = c(x,i)
-    if (rbinom(1,1,p) ==1){ ##similarly here for the distribution choice
+    if (rbinom(1,1,p) ==1){ #similarly here for the distribution choice
       x[length(x)] <- j
     }
   }
@@ -103,6 +103,8 @@ curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
 
 ```{r}
+"""
+
 #Code found on the internet idea
 x = rep(0,1000)
 x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
@@ -113,14 +115,14 @@ for(i in 2:1000){
   if(runif(1)<A){
     x[i] = proposedx       # accept move with probabily min(1,A)
   } else {
-    x[i] = currentx        # otherwise "reject" move, and stay where we are
+    x[i] = currentx        # otherwise 'reject' move, and stay where we are
   }
 }
 plot(x)
 hist(x, prob=TRUE, breaks = 20)
 x = seq(0, 5, by = 0.1)
 curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
-
+"""
 ```
 
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
@@ -137,10 +139,12 @@ USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 ```{r}
 ## code to do here
 t = replicate(500, metro(500))
-mean = sum(t)/500
-approx = 6*mean/((pi**2))
+mean = sum(t)/500 # needs to be 1.37 
+mean
+approx = (pi**2)/(6*mean)
 approx
 ```
+
 
 
 ## 2.) [15 points] Bayesian statistics and MCMC
