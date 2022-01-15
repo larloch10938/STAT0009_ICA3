@@ -310,7 +310,7 @@ mean(x) - (  (1-p)/p )
 testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
           ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
           sum(x==4)/1000 - dgeom(4,p))
-
+testt1
 opt2 <- function(t){
   inter = rexp(1,6)
   arr = inter
@@ -351,23 +351,32 @@ opt2 <- function(t){
     if(arrblue[m + 1] > outputblue[m]){outputblue <- c(outputblue, arrblue[m + 1] + serviceblue[m + 1])}
   }
   outputblue <- outputblue[-L]  
+  
   nr = sum(outputred > t)
   nb = sum(outputblue > t)
+  
   c(nr,nb)
 }
 
 
-x= replicate(1000, opt(600)) ## simulation by large number
-x1 = x[1,]
-x2 = x[2,]
-b1 = seq(-1,max(x1)+1, by=1)
-b2 = seq(-1,max(x2)+1, by=1)
-hist(x1, prob=TRUE, breaks=b1) ## draw a diagrom to assume the distribution
-p=1-0.75
-mean(x) - (  (1-p)/p )
-testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
-          ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
-          sum(x==4)/1000 - dgeom(4,p))
+y= replicate(1000, opt2(600)) ## simulation by large number
+y1 = y[1,]
+y2 = y[2,]
+
+a = seq(-1,max(y)+1, by=1)
+b1 = seq(-1,max(y1)+1, by=1)
+b2 = seq(-1,max(y2)+1, by=1)
+
+hist(y, prob=TRUE, breaks=a)
+hist(y1, prob=TRUE, breaks=b1) ## draw a diagrom to assume the distribution
+hist(y2, prob=TRUE, breaks=b1)
+
+q=1-0.75
+mean(y) - ( (1-q)/q )
+testt2= c(sum(y==0)/1000 - dgeom(0,q),sum(y==1)/1000 - dgeom(1,q)
+          ,sum(y==2)/1000 - dgeom(2,p),sum(y==3)/1000 - dgeom(3,q),
+          sum(y==4)/1000 - dgeom(4,q))
+testt2
 
 ```
 
