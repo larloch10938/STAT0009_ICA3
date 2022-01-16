@@ -103,26 +103,23 @@ curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
 
 ```{r}
-"""
-
 #Code found on the internet idea
-x = rep(0,1000)
-x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
-for(i in 2:1000){
-  currentx = x[i-1]
-  proposedx = currentx + rnorm(1,mean=0,sd=1)
-  A = target(proposedx)/target(currentx) 
-  if(runif(1)<A){
-    x[i] = proposedx       # accept move with probabily min(1,A)
-  } else {
-    x[i] = currentx        # otherwise 'reject' move, and stay where we are
-  }
-}
-plot(x)
-hist(x, prob=TRUE, breaks = 20)
-x = seq(0, 5, by = 0.1)
-curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
-"""
+# x = rep(0,1000)
+# x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
+# for(i in 2:1000){
+#   currentx = x[i-1]
+#   proposedx = currentx + rnorm(1,mean=0,sd=1)
+#   A = target(proposedx)/target(currentx) 
+#   if(runif(1)<A){
+#     x[i] = proposedx       # accept move with probabily min(1,A)
+#   } else {
+#     x[i] = currentx        # otherwise 'reject' move, and stay where we are
+#   }
+# }
+# plot(x)
+# hist(x, prob=TRUE, breaks = 20)
+# x = seq(0, 5, by = 0.1)
+# curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 ```
 
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
@@ -230,7 +227,7 @@ Finally if we normalize the amount of time spent in each state we will be able t
 ```{r, message=FALSE}
 library(tidyverse)
 m <- matrix(data=0,nrow=3,ncol=3)
-q <- matrix(data=list(),nrow=3,ncol=3)
+q <- matrix(data=0,nrow=3,ncol=3)
 ```
 
 ```{r}
@@ -250,7 +247,7 @@ h <- data %>%
   pull('mean(jump_time)')
 print(h)
 # compute q from h
-q_ii <- 1 / h
+q_ii <- -1 / h
 print(q_ii)
 m_data <- data %>% 
   group_by(states, previous_state) %>% 
@@ -267,6 +264,11 @@ for (i in state_list) {
 }
 m <- t(apply(m, 1, function(x) x/sum(x)))
 print(m)
+for (i in state_list) {
+  q[i, ] <- -m[i, ] * q_ii[i]
+  q[i, i] <- q_ii[i]
+}
+print(q)
 ```
 
 
@@ -279,7 +281,7 @@ Suppose you  have Poisson arrivals, with intensity $6$.  You are given the follo
 *  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
 
 ```{r}
-opt <- function(t){
+ opt <- function(t){
   inter = rexp(1,6)
   arr = inter
   
