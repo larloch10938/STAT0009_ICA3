@@ -229,8 +229,7 @@ Finally if we normalize the amount of time spent in each state we will be able t
 
 ```{r, message=FALSE}
 library(tidyverse)
-t <- matrix(data=list(),nrow=3,ncol=3)
-m <- matrix(data=list(),nrow=3,ncol=3)
+m <- matrix(data=0,nrow=3,ncol=3)
 q <- matrix(data=list(),nrow=3,ncol=3)
 ```
 
@@ -244,32 +243,29 @@ state_list <- data %>%
   distinct(states) %>% 
   pull()
 # by running the below code we get the amount of time spent on each state
-data %>% 
+h <- data %>% 
   group_by(previous_state) %>% 
   summarize(mean(jump_time)) %>% 
-  drop_na()
-# what is the average time to go from state i to state j?
+  drop_na() %>% 
+  pull('mean(jump_time)')
+print(h)
+# compute q from h
+q_ii <- 1 / h
+print(q_ii)
+m_data <- data %>% 
+  group_by(states, previous_state) %>% 
+  summarize(n = n())
 for (i in state_list) {
-  for (j in state_list){
-    avg_time <- data %>% 
-      filter(states == j & previous_state == i) %>% 
-      group_by(states, previous_state) %>% 
-      summarize(mean(jump_time), .groups = 'drop') %>% 
-      ungroup() %>% 
-      pull("mean(jump_time)")
-    t[[i,j]] <- avg_time
+  for (j in state_list) {
+    if (i != j) {
+      m[i, j] <- m_data %>% 
+      filter(states == j) %>% 
+      filter(previous_state == i) %>% 
+      pull(n)
+    }
   }
 }
-print(paste0("Average time spent jumping from state to state:"))
-print(t)
-for (n in state_list) {
-  t_1 <- if(n == 1) {0} else {t[[n, 5 - n]]}
-  t_2 <- if(n == 2) {0} else {t[[n, 4 - n]]}
-  t_3 <- if(n == 3) {0} else {t[[n, 3 - n]]}
-  m[[n,1]] <- if(n == 1) {0} else {1 / (1 + t_1/t[[n,1]])}
-  m[[n,2]] <- if(n == 2) {0} else {1 / (1 + t_2/t[[n,2]])}
-  m[[n,3]] <- if(n == 3) {0} else {1 / (1 + t_3/t[[n,3]])}
-}
+m <- t(apply(m, 1, function(x) x/sum(x)))
 print(m)
 ```
 
