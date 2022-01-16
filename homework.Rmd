@@ -167,7 +167,7 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 
 *  It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)*L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]*\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
-*  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}$$
+*  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
 ## 3.) [15 points] A Poisson process  process on a perimeter of a semi-circle
 
