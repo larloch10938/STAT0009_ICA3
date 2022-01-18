@@ -46,7 +46,7 @@ Use the Metropolis algorithm to sample from $\mu$, so that you do not need to kn
 
 
 ## Answer:
-* We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks the series as an integral (an integral is the continuous version of a discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
+* We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks at the series as an integral (an integral is the continuous version of a discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
 $$\int_{1}^{\infty} \frac{1}{x^{3}} \,dx \ = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{x^{3}} \,dx = \lim_{t \to \infty}  \frac{1}{-2x^{2}}\Biggr|_{x=1}^{x=t} = \frac{1}{2} < \infty $$
 The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as required.
 
@@ -81,13 +81,13 @@ a <- function(j, i){
 
 #Code idea from Week 9 exercises
 metro <- function(n){
-  x = 0.5
+  x = 1
   for (k in 1:n){
     i = x[length(x)]
     j = Yq(i)
     p = a(j,i)
     x = c(x,i)
-    if (rbinom(1,1,p) ==1){ ##similarly here for the distribution choice
+    if (rbinom(1,1,p) ==1){ #similarly here for the distribution choice
       x[length(x)] <- j
     }
   }
@@ -104,23 +104,22 @@ curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
 ```{r}
 #Code found on the internet idea
-x = rep(0,1000)
-x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
-for(i in 2:1000){
-  currentx = x[i-1]
-  proposedx = currentx + rnorm(1,mean=0,sd=1)
-  A = target(proposedx)/target(currentx) 
-  if(runif(1)<A){
-    x[i] = proposedx       # accept move with probabily min(1,A)
-  } else {
-    x[i] = currentx        # otherwise "reject" move, and stay where we are
-  }
-}
-plot(x)
-hist(x, prob=TRUE, breaks = 20)
-x = seq(0, 5, by = 0.1)
-curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
-
+# x = rep(0,1000)
+# x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
+# for(i in 2:1000){
+#   currentx = x[i-1]
+#   proposedx = currentx + rnorm(1,mean=0,sd=1)
+#   A = target(proposedx)/target(currentx) 
+#   if(runif(1)<A){
+#     x[i] = proposedx       # accept move with probabily min(1,A)
+#   } else {
+#     x[i] = currentx        # otherwise 'reject' move, and stay where we are
+#   }
+# }
+# plot(x)
+# hist(x, prob=TRUE, breaks = 20)
+# x = seq(0, 5, by = 0.1)
+# curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 ```
 
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
@@ -137,10 +136,12 @@ USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 ```{r}
 ## code to do here
 t = replicate(500, metro(500))
-mean = sum(t)/500
-approx = 6*mean/((pi**2))
+mean = sum(t)/500 # needs to be 1.37 
+mean
+approx = (pi**2)/(6*mean)
 approx
 ```
+
 
 
 ## 2.) [15 points] Bayesian statistics and MCMC
@@ -166,7 +167,7 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 
 *  It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)*L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]*\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
-*  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}$$
+*  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
 ## 3.) [15 points] A Poisson process  process on a perimeter of a semi-circle
 
@@ -225,9 +226,8 @@ Finally if we normalize the amount of time spent in each state we will be able t
 
 ```{r, message=FALSE}
 library(tidyverse)
-t <- matrix(data=list(),nrow=3,ncol=3)
-m <- matrix(data=list(),nrow=3,ncol=3)
-q <- matrix(data=list(),nrow=3,ncol=3)
+m <- matrix(data=0,nrow=3,ncol=3)
+q <- matrix(data=0,nrow=3,ncol=3)
 ```
 
 ```{r}
@@ -240,33 +240,35 @@ state_list <- data %>%
   distinct(states) %>% 
   pull()
 # by running the below code we get the amount of time spent on each state
-data %>% 
+h <- data %>% 
   group_by(previous_state) %>% 
   summarize(mean(jump_time)) %>% 
-  drop_na()
-# what is the average time to go from state i to state j?
+  drop_na() %>% 
+  pull('mean(jump_time)')
+print(h)
+# compute q from h
+q_ii <- -1 / h
+print(q_ii)
+m_data <- data %>% 
+  group_by(states, previous_state) %>% 
+  summarize(n = n())
 for (i in state_list) {
-  for (j in state_list){
-    avg_time <- data %>% 
-      filter(states == j & previous_state == i) %>% 
-      group_by(states, previous_state) %>% 
-      summarize(mean(jump_time), .groups = 'drop') %>% 
-      ungroup() %>% 
-      pull("mean(jump_time)")
-    t[[i,j]] <- avg_time
+  for (j in state_list) {
+    if (i != j) {
+      m[i, j] <- m_data %>% 
+      filter(states == j) %>% 
+      filter(previous_state == i) %>% 
+      pull(n)
+    }
   }
 }
-print(paste0("Average time spent jumping from state to state:"))
-print(t)
-for (n in state_list) {
-  t_1 <- if(n == 1) {0} else {t[[n, 5 - n]]}
-  t_2 <- if(n == 2) {0} else {t[[n, 4 - n]]}
-  t_3 <- if(n == 3) {0} else {t[[n, 3 - n]]}
-  m[[n,1]] <- if(n == 1) {0} else {1 / (1 + t_1/t[[n,1]])}
-  m[[n,2]] <- if(n == 2) {0} else {1 / (1 + t_2/t[[n,2]])}
-  m[[n,3]] <- if(n == 3) {0} else {1 / (1 + t_3/t[[n,3]])}
-}
+m <- t(apply(m, 1, function(x) x/sum(x)))
 print(m)
+for (i in state_list) {
+  q[i, ] <- -m[i, ] * q_ii[i]
+  q[i, i] <- q_ii[i]
+}
+print(q)
 ```
 
 
@@ -279,7 +281,7 @@ Suppose you  have Poisson arrivals, with intensity $6$.  You are given the follo
 *  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
 
 ```{r}
-opt <- function(t){
+ opt <- function(t){
   inter = rexp(1,6)
   arr = inter
   
