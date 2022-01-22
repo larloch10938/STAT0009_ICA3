@@ -178,6 +178,8 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 *   [5 points] Demonstrate using simulations that $\Upsilon$ is *not* a homogeneous Poisson point process on $[-1,1]$.
 
 *  [5 points]  Show analytically that $\Upsilon$ cannot be a homogeneous Poisson point process on $[-1,1]$.
+
+# 3.1
 ```{r}
 #3.1
 #function to define point on the upper circle
@@ -203,7 +205,7 @@ abline(0,0,lty=2)
 #plot to get projection onto x axis, this is Upsilon
 points(re[1,],rep(0,length(re[1,])))
 ```
-
+# 3.2
 Remembering the last exercise (shop keeper) from ICA1, this problem can be set up similarly, using the law of large numbers. The law of large numbers tells us that $${\frac {1}{n} (X_1+...+X_n) \rightarrow E[X_1]= \lambda (s-r) \; \text{as} \; n \rightarrow \infty},$$ where (s-r) is the length of the interval which $\lambda$ is estimated for. Therefore, the estimator $\frac {1}{n(s-r)} (X_1+...+X_n)$ is consistent and unbiased for $\lambda$, the true rate of the Poisson process on [r,s]. With this estimator and the sample data, we give the corresponding estimate $\frac {1}{n(s-r)} (x_1+...+x_n)$ for $\lambda$.
 
 Then, if we repeat the point generating-process from *3.1* n-times for $\Upsilon$, and we let $X_1,...,X_n$ be random variables representing the number of points generated for each of the $n$ replicates, and given that we can assume that these random variables are independent, we can say that the model gives that $X_i$ is a Poisson random variable with mean $\lambda_i$.  
@@ -264,6 +266,8 @@ nonhom(-0.4,0.3) #this is lambda1, lambda2, and lambda3
 
 #Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
 ```
+# 3.3
+Prove analytically
 
 ## 4.)  [15 points] The transition rate matrix
 
