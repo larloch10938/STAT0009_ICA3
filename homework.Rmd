@@ -212,6 +212,7 @@ Thus, if $[-1,1]$ interval is split up into smaller intervals, and the rate ($\l
 
 We can estimate $\lambda_i$, the rate of "arrival" in the $i^th$ interval for all i, where in our case $i=1,2,3$. Then, if the estimates in each interval are approximately equal, $\Upsilon$ is homogeneous, and if the estimates are unequal, $\Upsilon$ is non-homogeneous. This is because as $n \rightarrow \infty$, we know that our estimator of $\lambda_i$ will be unbiased and consistent. 
 
+The below code chunk will execute this in R.
 ```{r}
 #3.2
 #First, we generated points for Upsilon 100 times and created a vector, "reps" to
