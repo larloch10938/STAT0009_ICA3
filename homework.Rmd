@@ -225,10 +225,6 @@ while(counter < 100){
   reps <- append(reps,replicate(rpois(1,2*pi),point())[1,])
 }
 
-#The histogram and the plot are hard to interpret.
-hist(reps)
-plot(reps)
-
 #Then, the function "nonhom" was defined, that splits the [-1,1] into 3 intervals at
 #x and y, and estimates lambda_i in each interval according to the method described 
 #above, then outputs these estimates.
