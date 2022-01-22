@@ -202,10 +202,70 @@ abline(0,0,lty=2)
 
 #plot to get projection onto x axis, this is Upsilon
 points(re[1,],rep(0,length(re[1,])))
+```
 
+Remembering the last exercise (shop keeper) from ICA1, this problem can be set up similarly, using the law of large numbers. The law of large numbers tells us that $${\frac {1}{n} (X_1+...+X_n) \rightarrow E[X_1]= \lambda (s-r) \; \text{as} \; n \rightarrow \infty},$$ where (s-r) is the length of the interval which $\lambda$ is estimated for. Therefore, the estimator $\frac {1}{n(s-r)} (X_1+...+X_n)$ is consistent and unbiased for $\lambda$, the true rate of the Poisson process on [r,s]. With this estimator and the sample data, we give the corresponding estimate $\frac {1}{n(s-r)} (x_1+...+x_n)$ for $\lambda$.
+
+Then, if we repeat the point generating-process from *3.1* n-times for $\Upsilon$, and we let $X_1,...,X_n$ be random variables representing the number of points generated for each of the $n$ replicates, and given that we can assume that these random variables are independent, we can say that the model gives that $X_i$ is a Poisson random variable with mean $\lambda_i$.  
+
+Thus, if $[-1,1]$ interval is split up into smaller intervals, and the rate ($\lambda_i$) of the Poisson process $X_i$ is estimated in each interval, the result should be different in each interval, if $\Upsilon$ is indeed a non-homogeneous Poisson point process on $[-1,1]$.
+
+We can estimate $\lambda_i$, the rate of "arrival" in the $i^th$ interval for all i, where in our case $i=1,2,3$. Then, if the estimates in each interval are approximately equal, $\Upsilon$ is homogeneous, and if the estimates are unequal, $\Upsilon$ is non-homogeneous. This is because as $n \rightarrow \infty$, we know that our estimator of $\lambda_i$ will be unbiased and consistent. 
+
+```{r}
 #3.2
-#To show non-homogeneity, replicate this 1000 times, split into 2 intervals, take
-#means, means should differ. See ICA 1.
+#First, we generated points for Upsilon 100 times and created a vector, "reps" to
+#store all the points.
+set.seed(123)
+counter<- 0
+reps <- 0
+while(counter < 100){
+  counter <- counter+1
+  reps <- append(reps,replicate(rpois(1,2*pi),point())[1,])
+}
+
+#The histogram and the plot are hard to interpret.
+hist(reps)
+plot(reps)
+
+#Then, the function "nonhom" was defined, that splits the [-1,1] into 3 intervals at
+#x and y, and estimates lambda_i in each interval according to the method described 
+#above, then outputs these estimates.
+
+#As it is not specified whether x<y or y<x in the function, the three intervals are
+#[-1,min(x,y)], [min(x,y),max(x,y)], and [max(x,y),1].
+
+nonhom <- function(x,y){     
+          int1 <- reps[reps<min(x,y)]            #define points in first interval  
+          int2 <- reps[min(x,y)<reps && reps <max(x,y)] #define points in second interval
+          int3 <- reps[reps>max(x,y)]                   #define points third interval
+          if (length(int1) > 0){
+          numpoint1 <- length(int1)   #If there are points in the interval, count
+          } else {                    #the number of points in it. 
+            numpoint1 <- 0            #If the interval is empty, the number of points
+          }                           #is 0.
+          if (length(int2) > 0){      #Repeat this for all three intervals.
+          numpoint2 <- length(int2)
+          } else {
+            numpoint2 <- 0
+          }
+          if (length(int3) > 0){
+          numpoint3 <- length(int3)
+          } else {
+            numpoint3 <- 0
+          }                           #estimate each lambda according to the
+                                      #formula defined above and print results
+          
+          print(c(numpoint1*1/(100*(min(x,y)+1)),
+                  numpoint2*1/(100*(abs(x-y))), 
+                  numpoint3*1/(100*(1-max(x,y)))))
+}
+
+#The values -0.4 and 0.3 were randomly selected. From the results it is clear that three lambda values are different, meaning that Upsilon is indeed non-homogeneous.
+
+nonhom(-0.4,0.3) #this is lambda1, lambda2, and lambda3
+
+#Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
 ```
 
 ## 4.)  [15 points] The transition rate matrix
