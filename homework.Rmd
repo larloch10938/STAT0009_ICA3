@@ -346,6 +346,35 @@ Suppose you  have Poisson arrivals, with intensity $6$.  You are given the follo
 
 *  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
 
+The two options are very similar: both receive the arrivals at the same rate but serves them in a different way (i.e. as a $M(8)$ versus 2 $M(4)$). We can clearly see the results will be different.
+
+Option 1 is clearly superior to Option 2 since the amount of expected customers will be the same and they will all be served in the same queue; as soon as one customer is exiting the queue the next one will be served. That is not true for option 2, which is therefore prone to dead times and will be less efficient.
+
+If we treat Option 2 as a combination of two $M(3)/M(4)/1$ system given the probability to get a red or blue ball is independent we can compute the expected time in the system using Little's Law as:
+
+$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{4 - 3} = 1$$
+while in option 1 we have:
+
+$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{8 - 6} = \frac{1}{2}$$
+
+```{r}
+num <- function(n) {
+  M_1 <- 6
+  M_2 <- 8
+  inter <- rexp(n, M_1)
+  arr <- cumsum(inter)
+  service <- rexp(n, M_2)
+  output <- arr[1] + service[1]
+  for (i in 1:(n - 1)) {
+      output <- c(output, max(output[i], arr[i + 1]) + service[i + 1])
+  }
+  return(mean(output - arr))
+}
+
+mean(replicate(1000, num(1000)))
+```
+
+
 ```{r, eval=FALSE}
  opt <- function(t){
   inter = rexp(1,6)
