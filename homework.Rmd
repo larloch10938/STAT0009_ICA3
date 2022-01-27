@@ -61,66 +61,47 @@ for (i in 1:1000){
 s
 
 #Construction of Metropolis algorithm from week9 exercises
-target <- function(x){
-  z=0
-  if (x > 0){
-    z = 1/(x^3)
+
+h <- function(x){
+ z=0
+  if(x >0){z = 1/(x^3)}
+ z
   }
-  z
-}
+
 
 Yq <- function(x){
-  y = rnorm(1,x,1) ##Not sure about distribution choice here
-  y
+   y= rnorm(1,x,1)
+y
 }
 
-a <- function(j, i){
-  m = min(c(target(j)/target(i),1))
-  m
+a <- function(j,i){
+m=min( c( h(j)/h(i), 1 ))  
+m
 }
 
-#Code idea from Week 9 exercises
 metro <- function(n){
-  x = 1
-  for (k in 1:n){
+  x=10
+  for(k in 1:n){
     i = x[length(x)]
     j = Yq(i)
     p = a(j,i)
     x = c(x,i)
-    if (rbinom(1,1,p) ==1){ #similarly here for the distribution choice
+      if ( rbinom(1,1,p)==1 ) {
       x[length(x)] <- j
-    }
+            }
   }
   x
 }
 
-t = replicate(500, metro(500))
-hist(t, prob=TRUE, breaks = 50)
-curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
+z = replicate(1000, metro(1000))
+
+hist(z, prob=TRUE, breaks=100, to = 30)
+x= seq(0, 1, by =0.1)
+curve(1/(s*(x^3)), add=TRUE, to = 30)
 
 ```
 
-
-```{r}
-#Code found on the internet idea
-# x = rep(0,1000)
-# x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
-# for(i in 2:1000){
-#   currentx = x[i-1]
-#   proposedx = currentx + rnorm(1,mean=0,sd=1)
-#   A = target(proposedx)/target(currentx) 
-#   if(runif(1)<A){
-#     x[i] = proposedx       # accept move with probabily min(1,A)
-#   } else {
-#     x[i] = currentx        # otherwise 'reject' move, and stay where we are
-#   }
-# }
-# plot(x)
-# hist(x, prob=TRUE, breaks = 20)
-# x = seq(0, 5, by = 0.1)
-# curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
-```
 
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
 $$\mathbb{E}(\mu(n))=\sum_{n=1}^{\infty} \frac{n}{\zeta(3)n^{3}} = \frac{1}{\xi(3)}\sum_{n=1}^{\infty} \frac{1}{n^{2}} = \frac{\pi^{2}}{\zeta(3)6} $$
@@ -135,10 +116,9 @@ USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
 ```{r}
 ## code to do here
-t = replicate(500, metro(500))
-mean = sum(t)/500 # needs to be 1.37 
-mean
-approx = (pi**2)/(6*mean)
+
+mean(z) 
+approx = (pi^2)/(6*mean(z))
 approx
 ```
 
