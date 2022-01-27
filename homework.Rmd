@@ -52,7 +52,7 @@ The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as re
 
 * From Week 9 Exercises in class, we were introduced to the Metropolis-Hastings algorithm. 
 ```{r}
-## Aperys constant
+## Aperys constant for verification
 s = 0
 for (i in 1:1000){
   s <- s + 1/(i^3)
@@ -60,31 +60,31 @@ for (i in 1:1000){
 }
 s
 
-#Construction of Metropolis algorithm from week9 exercises
+#Construction of Metropolis algorithm from week 9 exercises
 
-h <- function(x){
+pi <- function(x){ #h function is the target distribution we have up to a constant
  z=0
-  if(x >0){z = 1/(x^3)}
+  if(x >0){z = 1/(x^3)} #target distribution up to a constant
  z
   }
 
 
-Yq <- function(x){
-   y= rnorm(1,x,1)
+Yq <- function(x){ #Yq function calculates the proposal distribution for each x
+   y= rnorm(1,x,1) #proposal distribution
 y
 }
 
-a <- function(j,i){
-m=min( c( h(j)/h(i), 1 ))  
+alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
+m=min( c( pi(j)/pi(i), 1 ))  #comparison of the proposal distribution ratio and 1
 m
 }
 
-metro <- function(n){
+metro <- function(n){ #the metropolis-hastings algorithm function combining everything together to find the samples of the mu distribution
   x=10
   for(k in 1:n){
     i = x[length(x)]
     j = Yq(i)
-    p = a(j,i)
+    p = alpha(j,i) #the probability of moving from state i to state j
     x = c(x,i)
       if ( rbinom(1,1,p)==1 ) {
       x[length(x)] <- j
@@ -94,11 +94,11 @@ metro <- function(n){
 }
 
 
-z = replicate(1000, metro(1000))
+z = replicate(1000, metro(1000)) #run the algorithm 1000 times to converge to the target distribution
 
-hist(z, prob=TRUE, breaks=100, to = 30)
+hist(z, prob=TRUE, breaks=100, to = 30) #plot of the distribution as probability histograms
 x= seq(0, 1, by =0.1)
-curve(1/(s*(x^3)), add=TRUE, to = 30)
+curve(1/(s*(x^3)), add=TRUE, to = 30) #the actual distribution as verification with Apery's constant
 
 ```
 
@@ -110,7 +110,7 @@ $$ M = \frac{1}{N}\sum_{n=1}^{N}\mu(n),$$
 where $N$ is the number of simulations we will do (in the previous part $N=500$).
 
 So, to obtain Apery's constant,
-$\zeta(3) \approx \frac{6M}{\pi^{2}}.$
+$\zeta(3) \approx \frac{\pi^{2}}{6M}.$
 
 USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
