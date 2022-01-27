@@ -149,6 +149,52 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 
 *  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
+```{r}
+f <- function(x){                 #this is the target distribution known up to
+  z=0                             #a constant factor
+  if(x >0) {z=(x^(-5)*exp(-15/x))}
+  z
+}
+
+Yq <- function(x){                #this is a random variable Y with proposal 
+  y= rnorm(1,x,1)                 #distribution Q ~ Normal (x,1)
+  y
+}
+
+alpha <- function(j,i){           #alpha is the probability of moving from
+  m=min( c( f(j)/f(i), 1 ))       #state i to state j
+  m
+}
+
+metro <- function(n){             #this is a function that implements the 
+  x=10   #starting value          #Metropolis-Hastings algorithm and samples
+  for(k in 1:n){                  #from the target distribution.
+    i = x[length(x)]
+    j = Yq(i)
+    p = alpha(j,i)
+    x = c(x,i)
+    if ( rbinom(1,1,p)==1 ) {
+      x[length(x)] <- j
+    }
+  }
+  x
+}
+
+z = replicate(1000, metro(1000))  #create 1000 samples
+
+#this is a histogram of independent samples from the target distribution 
+#(using the MH-algotrithm)
+hist(z, prob=TRUE, breaks=50, xlab = expression(theta),ylab="Probability", main="Posterior distribution of theta", ylim=c(0,0.4), xlim=c(0,50))
+x= seq(0, 1, by =0.1)
+
+#curve of the Inverse Gamma (5,15) distribution (this is the true distribution #based on section 2.3)
+curve(15^5/24*x^(-6)*exp(-15/x), add=T, col="red")
+legend("center",legend=c("Inverse Gamma (5,15)", "Samples using MH"),col=c("gray","red"),lty=c(1,1))
+#The curve and the histogram follows roughly the same shape indicating that 
+#the Metropolis-Hastings algorithm was indeed succesful and that our guess of
+#the posterior distribution being an Inverse Gamma distribution was correct.
+```
+
 ## 3.) [15 points] A Poisson process  process on a perimeter of a semi-circle
 
 Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upper half of the circle given by $x^2+y^2 =1$.  Here, $\Gamma$ is not the Gamma function.   Consider the point process $\Upsilon$ given by the  projection of $\Gamma$ onto the $x$-axis; that is, if $\Gamma$ had $n$ points and they are given by $(x_1, y_1), \ldots, (x_n, y_n)$, then the points of  $\Upsilon$ are just the $x$-coordinates  $x_1, \ldots, x_n$.   
