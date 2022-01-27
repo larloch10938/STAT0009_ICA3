@@ -62,29 +62,29 @@ s
 
 #Construction of Metropolis algorithm from week 9 exercises
 
-h <- function(x){
+pi <- function(x){ #h function is the target distribution we have up to a constant
  z=0
   if(x >0){z = 1/(x^3)} #target distribution up to a constant
  z
   }
 
 
-Yq <- function(x){
+Yq <- function(x){ #Yq function calculates the proposal distribution for each x
    y= rnorm(1,x,1) #proposal distribution
 y
 }
 
-alpha <- function(j,i){
-m=min( c( h(j)/h(i), 1 ))  #comparison of the proposal distribution ratio and 1
+alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
+m=min( c( pi(j)/pi(i), 1 ))  #comparison of the proposal distribution ratio and 1
 m
 }
 
-metro <- function(n){ #the metropolis-hastings algorithm 
+metro <- function(n){ #the metropolis-hastings algorithm function combining everything together to find the samples of the mu distribution
   x=10
   for(k in 1:n){
     i = x[length(x)]
     j = Yq(i)
-    p = alpha(j,i) #
+    p = alpha(j,i) #the probability of moving from state i to state j
     x = c(x,i)
       if ( rbinom(1,1,p)==1 ) {
       x[length(x)] <- j
@@ -94,9 +94,9 @@ metro <- function(n){ #the metropolis-hastings algorithm
 }
 
 
-z = replicate(1000, metro(1000)) #run the algorithm 1000 times for precision
+z = replicate(1000, metro(1000)) #run the algorithm 1000 times to converge to the target distribution
 
-hist(z, prob=TRUE, breaks=100, to = 30) #plot of the distribution as histograms
+hist(z, prob=TRUE, breaks=100, to = 30) #plot of the distribution as probability histograms
 x= seq(0, 1, by =0.1)
 curve(1/(s*(x^3)), add=TRUE, to = 30) #the actual distribution as verification with Apery's constant
 
