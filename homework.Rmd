@@ -291,7 +291,7 @@ nonhom <- function(x,y){
 
 #The values -0.4 and 0.3 were randomly selected. From the results it is clear that three lambda values are different, meaning that Upsilon is indeed non-homogeneous.
 
-nonhom(-0.4,0.3) #this is lambda1, lambda2, and lambda3
+nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 
 #Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
 ```
