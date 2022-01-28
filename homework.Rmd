@@ -62,7 +62,7 @@ s
 
 #Construction of Metropolis algorithm from week 9 exercises
 
-pi <- function(x){ #h function is the target distribution we have up to a constant
+pi_function <- function(x){ #h function is the target distribution we have up to a constant
  z=0
   if(x >0){z = 1/(x^3)} #target distribution up to a constant
  z
@@ -75,7 +75,7 @@ y
 }
 
 alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
-m=min( c( pi(j)/pi(i), 1 ))  #comparison of the proposal distribution ratio and 1
+m=min( c( pi_function(j)/pi_function(i), 1 ))  #comparison of the proposal distribution ratio and 1
 m
 }
 
@@ -114,7 +114,7 @@ $\zeta(3) \approx \frac{\pi^{2}}{6M}.$
 
 USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
-```{r}
+```{r, eval=FALSE}
 ## code to do here
 
 mean(z) 
