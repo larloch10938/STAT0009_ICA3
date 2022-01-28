@@ -353,12 +353,16 @@ Option 1 is clearly superior to Option 2 since the amount of expected customers 
 If we treat Option 2 as a combination of two $M(3)/M(4)/1$ system given the probability to get a red or blue ball is independent we can compute the expected time in the system using Little's Law as:
 
 $$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{4 - 3} = 1$$
-while in option 1 we have:
+so given we have two queues and equal probabilty of being in one or the other (i.e. 0.5):
 
-$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{8 - 6} = \frac{1}{2}$$
+$$ E(W_{tot}) = E(W) * 0.5 + E(W) * 0.5 = 0.5 + 0.5 = 1 $$
+
+In option 1 we have:
+
+$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{8 - 6} = \frac{1}{2} = 0.5$$
 
 ```{r}
-num <- function(n) {
+normal_queue <- function(n) {
   M_1 <- 6
   M_2 <- 8
   inter <- rexp(n, M_1)
@@ -371,9 +375,36 @@ num <- function(n) {
   return(mean(output - arr))
 }
 
-mean(replicate(1000, num(1000)))
+mean(replicate(100, normal_queue(10000)))
 ```
+The result is very close to 0.5 confirming our analytical results.
 
+```{r}
+split_queue <- function(n) {
+  M_1 <- 6
+  M_2 <- 4
+  inter <- rexp(n, M_1)
+  arr <- cumsum(inter)
+  prob <- rbinom(n, 1, 0.5)
+  arr_blue <- arr[prob == 0]
+  arr_red <- arr[prob == 1]
+  service_blue <- rexp(n, M_2)
+  service_red <- rexp(n, M_2)
+  output_blue <- arr_blue[1] + service_blue[1]
+  output_red <- arr_red[1] + service_red[1]
+  for (i in 1:(length(arr_blue) - 1)) {
+      output_blue <- c(output_blue, max(output_blue[i], arr_blue[i + 1]) + service_blue[i + 1])
+  }
+  for (i in 1:(length(arr_red) - 1)) {
+      output_red <- c(output_red, max(output_red[i], arr_red[i + 1]) + service_red[i + 1])
+  }
+  
+  return(0.5 * mean(output_blue - arr_blue) + 0.5 * mean(output_red - arr_red))
+}
+
+mean(replicate(100, split_queue(10000)))
+```
+The result is very close to 1 confirming our analytical results.
 
 ```{r, eval=FALSE}
  opt <- function(t){
