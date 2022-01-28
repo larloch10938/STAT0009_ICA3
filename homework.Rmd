@@ -52,7 +52,7 @@ The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as re
 
 * From Week 9 Exercises in class, we were introduced to the Metropolis-Hastings algorithm. 
 ```{r}
-## Aperys constant
+## Aperys constant for verification
 s = 0
 for (i in 1:1000){
   s <- s + 1/(i^3)
@@ -60,67 +60,48 @@ for (i in 1:1000){
 }
 s
 
-#Construction of Metropolis algorithm from week9 exercises
-target <- function(x){
-  z=0
-  if (x > 0){
-    z = 1/(x^3)
+#Construction of Metropolis algorithm from week 9 exercises
+
+pi <- function(x){ #h function is the target distribution we have up to a constant
+ z=0
+  if(x >0){z = 1/(x^3)} #target distribution up to a constant
+ z
   }
-  z
+
+
+Yq <- function(x){ #Yq function calculates the proposal distribution for each x
+   y= rnorm(1,x,1) #proposal distribution
+y
 }
 
-Yq <- function(x){
-  y = rnorm(1,x,1) ##Not sure about distribution choice here
-  y
+alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
+m=min( c( pi(j)/pi(i), 1 ))  #comparison of the proposal distribution ratio and 1
+m
 }
 
-a <- function(j, i){
-  m = min(c(target(j)/target(i),1))
-  m
-}
-
-#Code idea from Week 9 exercises
-metro <- function(n){
-  x = 1
-  for (k in 1:n){
+metro <- function(n){ #the metropolis-hastings algorithm function combining everything together to find the samples of the mu distribution
+  x=10
+  for(k in 1:n){
     i = x[length(x)]
     j = Yq(i)
-    p = a(j,i)
+    p = alpha(j,i) #the probability of moving from state i to state j
     x = c(x,i)
-    if (rbinom(1,1,p) ==1){ #similarly here for the distribution choice
+      if ( rbinom(1,1,p)==1 ) {
       x[length(x)] <- j
-    }
+            }
   }
   x
 }
 
-t = replicate(500, metro(500))
-hist(t, prob=TRUE, breaks = 50)
-curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
 
+z = replicate(1000, metro(1000)) #run the algorithm 1000 times to converge to the target distribution
+
+hist(z, prob=TRUE, breaks=100, to = 30) #plot of the distribution as probability histograms
+x= seq(0, 1, by =0.1)
+curve(1/(s*(x^3)), add=TRUE, to = 30) #the actual distribution as verification with Apery's constant
 
 ```
 
-
-```{r}
-#Code found on the internet idea
-# x = rep(0,1000)
-# x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
-# for(i in 2:1000){
-#   currentx = x[i-1]
-#   proposedx = currentx + rnorm(1,mean=0,sd=1)
-#   A = target(proposedx)/target(currentx) 
-#   if(runif(1)<A){
-#     x[i] = proposedx       # accept move with probabily min(1,A)
-#   } else {
-#     x[i] = currentx        # otherwise 'reject' move, and stay where we are
-#   }
-# }
-# plot(x)
-# hist(x, prob=TRUE, breaks = 20)
-# x = seq(0, 5, by = 0.1)
-# curve(1/(s*(x^3)), add=TRUE) ## Actual distribution graph
-```
 
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
 $$\mathbb{E}(\mu(n))=\sum_{n=1}^{\infty} \frac{n}{\zeta(3)n^{3}} = \frac{1}{\xi(3)}\sum_{n=1}^{\infty} \frac{1}{n^{2}} = \frac{\pi^{2}}{\zeta(3)6} $$
@@ -129,16 +110,15 @@ $$ M = \frac{1}{N}\sum_{n=1}^{N}\mu(n),$$
 where $N$ is the number of simulations we will do (in the previous part $N=500$).
 
 So, to obtain Apery's constant,
-$\zeta(3) \approx \frac{6M}{\pi^{2}}.$
+$\zeta(3) \approx \frac{\pi^{2}}{6M}.$
 
 USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
 ```{r}
 ## code to do here
-t = replicate(500, metro(500))
-mean = sum(t)/500 # needs to be 1.37 
-mean
-approx = (pi**2)/(6*mean)
+
+mean(z) 
+approx = (pi^2)/(6*mean(z))
 approx
 ```
 
@@ -168,6 +148,52 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 *  It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)\times L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]\times\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C \times\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
 *  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
+
+```{r}
+f <- function(x){                 #this is the target distribution known up to
+  z=0                             #a constant factor
+  if(x >0) {z=(x^(-5)*exp(-15/x))}
+  z
+}
+
+Yq <- function(x){                #this is a random variable Y with proposal 
+  y= rnorm(1,x,1)                 #distribution Q ~ Normal (x,1)
+  y
+}
+
+alpha <- function(j,i){           #alpha is the probability of moving from
+  m=min( c( f(j)/f(i), 1 ))       #state i to state j
+  m
+}
+
+metro <- function(n){             #this is a function that implements the 
+  x=10   #starting value          #Metropolis-Hastings algorithm and samples
+  for(k in 1:n){                  #from the target distribution.
+    i = x[length(x)]
+    j = Yq(i)
+    p = alpha(j,i)
+    x = c(x,i)
+    if ( rbinom(1,1,p)==1 ) {
+      x[length(x)] <- j
+    }
+  }
+  x
+}
+
+z = replicate(1000, metro(1000))  #create 1000 samples
+
+#this is a histogram of independent samples from the target distribution 
+#(using the MH-algotrithm)
+hist(z, prob=TRUE, breaks=50, xlab = expression(theta),ylab="Probability", main="Posterior distribution of theta", ylim=c(0,0.4), xlim=c(0,50))
+x= seq(0, 1, by =0.1)
+
+#curve of the Inverse Gamma (5,15) distribution (this is the true distribution #based on section 2.3)
+curve(15^5/24*x^(-6)*exp(-15/x), add=T, col="red")
+legend("center",legend=c("Inverse Gamma (5,15)", "Samples using MH"),col=c("gray","red"),lty=c(1,1))
+#The curve and the histogram follows roughly the same shape indicating that 
+#the Metropolis-Hastings algorithm was indeed succesful and that our guess of
+#the posterior distribution being an Inverse Gamma distribution was correct.
+```
 
 ## 3.) [15 points] A Poisson process  process on a perimeter of a semi-circle
 
@@ -265,7 +291,7 @@ nonhom <- function(x,y){
 
 #The values -0.4 and 0.3 were randomly selected. From the results it is clear that three lambda values are different, meaning that Upsilon is indeed non-homogeneous.
 
-nonhom(-0.4,0.3) #this is lambda1, lambda2, and lambda3
+nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 
 #Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
 ```
