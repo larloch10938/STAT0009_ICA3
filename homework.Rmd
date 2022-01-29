@@ -13,24 +13,7 @@ SN: 21169367
 SN: 19011782
 SN: 20117921
 
-# Introduction
-
-* Due 9 February 2022.
-* You are to work in groups of 2-4; there should be no overlap with your ICA2 groups.
-* This ICA consists of five questions, worth 65 points;
-* another 10 points will be given based on presentation, so that the total available points is 75.  
-* This ICA is worth 30 percent of your grade for this module.
-* Many questions will require you to write and run R/Python code.
-* The ICA must be completed in R Markdown/Juptyer Notebook and typeset using  Markdown with Latex code, just like the way our module content is generated.  You can choose to use either R or Python.
-* Please hand in the html file and the Rmd/ipynb source file.
-* As usual, part of the grading will depend on the clarity and presentation of your solutions.
-*  You are to do this assignment by yourselves, without any help from others.
-*  You are allowed to use any materials and code that was presented so far.
-*  Do not search the internet for answers to the ICA.
-*  Do not use any fancy code or packages imported from elsewhere.
-
 # Questions
-
 
 ## 1.) [10 points] Apery's constant 
 
@@ -174,6 +157,7 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 *  [3 points] Plot independent samples in a probability histogram and compare with the true result.
 
 ## Answer:
+
 *  The likelihood function of $\theta$ is $$L(\theta,k,w_i) = \prod_{i=1}^{n}\mathbf{1}[w_i >0]\frac{k w_i^{k-1}}{\theta}\exp[- \tfrac{w_i^{k}}{\theta }] = \mathbf{1}[w_{(1)} >0]k^n (\prod_{i=1}^{n} w_i^{k-1})\theta^{-n}\exp[- \tfrac{\sum_{i=1}^{n}w_i^{k}}{\theta }].$$ Then, if we define $t(W)$ as $\sum_{i=1}^{n}w_i^{k}$, we can rewrite the likelihood function as $$L(\theta,k,w_i) = \mathbf{1}[w_{(1)} >0]k^n (\prod_{i=1}^{n} w_i^{k-1})\theta^{-n}\exp[- \tfrac{t(W)}{\theta }]=g(t;\theta)*h(\underline{w}),$$ where $$g(t;\theta)=\theta^{-n}exp[-\tfrac{t(W)}{\theta}]$$ and $$h(\underline{w})=\mathbf{1}[w_{(1)}>0]k^n\prod_{i=1}^{n}w_i^{k-1}.$$ Using the factorisation theorem, we can see that  $t(W)=\sum_{i=1}^{n}w_i^{k}$ is indeed a sufficient statistic of $\theta$.
 
 *  It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)\times L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]\times\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C \times\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
@@ -181,48 +165,53 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 *  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
 ```{r}
-f <- function(x){                 #this is the target distribution known up to
-  z=0                             #a constant factor
-  if(x >0) {z=(x^(-5)*exp(-15/x))}
+f <- function(x){                  #This is the target distribution known up to
+  z=0                              #a constant factor, when a=2, b=3, n=3, x1=2, 
+  if(x >0) {z=(x^(-5)*exp(-15/x))} #x2=4, x3=6, and k=1.
   z
 }
 
-Yq <- function(x){                #this is a random variable Y with proposal 
-  y= rnorm(1,x,1)                 #distribution Q ~ Normal (x,1)
-  y
-}
+Yq <- function(x){                 #This is a random variable Y, with proposal 
+  y= rnorm(1,x,1)                  #distribution Q ~ Normal (x,1). A Normal
+  y                                #distribution was chosen due to its ease of
+}                                  #use.
 
-alpha <- function(j,i){           #alpha is the probability of moving from
-  m=min( c( f(j)/f(i), 1 ))       #state i to state j
+alpha <- function(j,i){            #Alpha is the probability of moving from
+  m=min( c( f(j)/f(i), 1 ))        #state i to state j, as defined in our lecture.
   m
 }
 
-metro <- function(n){             #this is a function that implements the 
+metro <- function(n){             #This is a function that implements the 
   x=10   #starting value          #Metropolis-Hastings algorithm and samples
-  for(k in 1:n){                  #from the target distribution.
-    i = x[length(x)]
-    j = Yq(i)
-    p = alpha(j,i)
-    x = c(x,i)
-    if ( rbinom(1,1,p)==1 ) {
-      x[length(x)] <- j
-    }
-  }
+  for(k in 1:n){                  #from the target distribution. It simulates a
+    i = x[length(x)]              #Markov Chain of length n, where at each current
+    j = Yq(i)                     #state a next step is proposed which is either
+    p = alpha(j,i)                #accepted or rejected based on alpha. A Bernoulli
+    x = c(x,i)                    #trial with probability p is used to decide 
+    if ( rbinom(1,1,p)==1 ) {     #whether the chain moves to the next state or 
+      x[length(x)] <- j           #stays in the current one. Here, p represents
+    }                             #the probability that the next state of the MC
+  }                               #is j, given that the current one is i.
   x
 }
 
-z = replicate(1000, metro(1000))  #create 1000 samples
+z = replicate(1000, metro(1000))  #Then, we create 1000 samples.
 
-#this is a histogram of independent samples from the target distribution 
-#(using the MH-algotrithm)
-hist(z, prob=TRUE, breaks=50, xlab = expression(theta),ylab="Probability", main="Posterior distribution of theta", ylim=c(0,0.4), xlim=c(0,50))
+#Then we plot a histogram of independent samples from the target distribution 
+#(using the MH-algotrithm).
+
+hist(z, prob=TRUE, breaks=50, xlab = expression(theta),ylab="Probability", 
+     main="Posterior distribution of theta", ylim=c(0,0.4), xlim=c(0,50))
 x= seq(0, 1, by =0.1)
 
-#curve of the Inverse Gamma (5,15) distribution (this is the true distribution #based on section 2.3)
+#We add the curve of the Inverse Gamma (5,15) distribution (this is the true distribution #based on section 2.3).
+
 curve(15^5/24*x^(-6)*exp(-15/x), add=T, col="red")
-legend("center",legend=c("Inverse Gamma (5,15)", "Samples using MH"),col=c("gray","red"),lty=c(1,1))
+legend("center",legend=c("Inverse Gamma (5,15)", "Samples using MH"), 
+       col=c("gray","red"),lty=c(1,1))
+
 #The curve and the histogram follows roughly the same shape indicating that 
-#the Metropolis-Hastings algorithm was indeed succesful and that our guess of
+#the Metropolis-Hastings algorithm was indeed successful and that our guess of
 #the posterior distribution being an Inverse Gamma distribution was correct.
 ```
 
@@ -241,26 +230,26 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 #### 3.1
 ```{r}
 #3.1
-#function to define point on the upper circle
+#First we write a function to define a point on the upper circle.
 point <- function(){
     x <- 2*runif(1) -1
     y <- sqrt(1-x^2)
     z <- c(x,y)
   z
 }
-#replicate to create multiple points
+#Then, we replicate this to create multiple points.
 re <- replicate(rpois(1,2*pi),point())
 
-#plot upper half circle for ease of interpretation
+#Then, we plot an upper half circle for ease of interpretation.
 curve(sqrt(1-x^2), from=-1, to=1 ,lty=2, xlab="x", ylab="y")
 
-#plot points to get Gamma
+#Next, we plot points to get Gamma.
 points(re[1,], re[2,], xlim=c(-1.1,1.1), ylim=c(-0.1,1.1))
 
-#plot zero line for ease of interpretation
+#We plot a line y=0 for ease of interpretation.
 abline(0,0,lty=2)
 
-#plot to get projection onto x axis, this is Upsilon
+#We plot the projection of Gamma onto x axis, this is Upsilon.
 points(re[1,],rep(0,length(re[1,])))
 ```
 
@@ -312,19 +301,23 @@ nonhom <- function(x,y){
           numpoint3 <- length(int3)
           } else {
             numpoint3 <- 0
-          }                           #estimate each lambda according to the
-                                      #formula defined above and print results
+          }                           #Estimate each lambda according to the
+                                      #formula defined above and print results.
           
           print(c(numpoint1*1/(n*(min(x,y)+1)),
                   numpoint2*1/(n*(abs(x-y))), 
                   numpoint3*1/(n*(1-max(x,y)))))
 }
 
-#The values -0.4 and 0.3 were randomly selected. From the results it is clear that three lambda values are different, meaning that Upsilon is indeed non-homogeneous.
+#The values -0.66 and 0.66 were randomly selected. The function works with any 
+#other input x or y values as well. 
 
 nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 
-#Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
+#From the results it is clear that three lambda values are different. Due to the
+#large sample size and the law of large numbers, we can say that this difference 
+#in the lambda values is evidence against the Upsilon being homogeneous. Therefore,
+#we have proven that Upsilon is a non-homogeneous Poisson point process.
 ```
 #### 3.3
 Prove analytically
