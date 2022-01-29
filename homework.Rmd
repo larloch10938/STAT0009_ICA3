@@ -81,8 +81,12 @@ for (x in 1:10){
 }
 
 
+<<<<<<< HEAD
 #Construction of Metropolis algorithm based off week 9 exercises
 pi <- function(n){ #pi function is the target distribution we have up to a constant
+=======
+pi_function <- function(x){ #h function is the target distribution we have up to a constant
+>>>>>>> 85066d879417088734877d4db9e4ecb0cc7acfbb
  z=0
   if(n >0 && n == floor(n)){z = 1/(n^3)} #target distribution, as it is a discrete distribution for positive integers, we ensure the input is this
  z
@@ -94,11 +98,17 @@ Yq <- function(x){   #Yq function calculates the proposal distribution for each 
  y
 }
 
+<<<<<<< HEAD
 alpha <- function(j,i){ #alpha function works out the probability of moving from state i to state j
   prob_i = 1/(2*i)  #Here, i is the state of the current markov chain with the target distribution and j is state of the next potential step of the markov chain with the target   distribution.
   prob_j = 1/(2*j)    # The ratios are calculated and the minimum is taken with 1 to in find the probability #of moving from state i to state j
   m=min( c( pi(j)/pi(i)*dgeom(i-1, prob_j)/dgeom(j-1, prob_i), 1)) 
   m          
+=======
+alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
+m=min( c( pi_function(j)/pi_function(i), 1 ))  #comparison of the proposal distribution ratio and 1
+m
+>>>>>>> 85066d879417088734877d4db9e4ecb0cc7acfbb
 }
 
 metro <- function(N){ #the Metropolis algorithm function combining everything together to find the samples of the mu distribution, simulates the Markov chain up to N
@@ -140,7 +150,7 @@ $\zeta(3) \approx \frac{\pi^{2}}{6M}.$
 
 USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
-```{r}
+```{r, eval=FALSE}
 ## code to do here
 
 d= replicate(1000, metro(1000))
@@ -176,6 +186,52 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 *  It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)\times L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]\times\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C \times\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
 *  $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C *\frac{\beta^{\alpha}}{\Gamma(\alpha)}k^n (\prod_{i=1}^{n} x_i^{k-1})= \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
+
+```{r}
+f <- function(x){                 #this is the target distribution known up to
+  z=0                             #a constant factor
+  if(x >0) {z=(x^(-5)*exp(-15/x))}
+  z
+}
+
+Yq <- function(x){                #this is a random variable Y with proposal 
+  y= rnorm(1,x,1)                 #distribution Q ~ Normal (x,1)
+  y
+}
+
+alpha <- function(j,i){           #alpha is the probability of moving from
+  m=min( c( f(j)/f(i), 1 ))       #state i to state j
+  m
+}
+
+metro <- function(n){             #this is a function that implements the 
+  x=10   #starting value          #Metropolis-Hastings algorithm and samples
+  for(k in 1:n){                  #from the target distribution.
+    i = x[length(x)]
+    j = Yq(i)
+    p = alpha(j,i)
+    x = c(x,i)
+    if ( rbinom(1,1,p)==1 ) {
+      x[length(x)] <- j
+    }
+  }
+  x
+}
+
+z = replicate(1000, metro(1000))  #create 1000 samples
+
+#this is a histogram of independent samples from the target distribution 
+#(using the MH-algotrithm)
+hist(z, prob=TRUE, breaks=50, xlab = expression(theta),ylab="Probability", main="Posterior distribution of theta", ylim=c(0,0.4), xlim=c(0,50))
+x= seq(0, 1, by =0.1)
+
+#curve of the Inverse Gamma (5,15) distribution (this is the true distribution #based on section 2.3)
+curve(15^5/24*x^(-6)*exp(-15/x), add=T, col="red")
+legend("center",legend=c("Inverse Gamma (5,15)", "Samples using MH"),col=c("gray","red"),lty=c(1,1))
+#The curve and the histogram follows roughly the same shape indicating that 
+#the Metropolis-Hastings algorithm was indeed succesful and that our guess of
+#the posterior distribution being an Inverse Gamma distribution was correct.
+```
 
 ## 3.) [15 points] A Poisson process  process on a perimeter of a semi-circle
 
@@ -273,7 +329,7 @@ nonhom <- function(x,y){
 
 #The values -0.4 and 0.3 were randomly selected. From the results it is clear that three lambda values are different, meaning that Upsilon is indeed non-homogeneous.
 
-nonhom(-0.4,0.3) #this is lambda1, lambda2, and lambda3
+nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 
 #Thus, we proved that Upsilon is a non-homogeneous Poisson point process.
 ```
@@ -361,12 +417,16 @@ Option 1 is clearly superior to Option 2 since the amount of expected customers 
 If we treat Option 2 as a combination of two $M(3)/M(4)/1$ system given the probability to get a red or blue ball is independent we can compute the expected time in the system using Little's Law as:
 
 $$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{4 - 3} = 1$$
-while in option 1 we have:
+so given we have two queues and equal probabilty of being in one or the other (i.e. 0.5):
 
-$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{8 - 6} = \frac{1}{2}$$
+$$ E(W_{tot}) = E(W) * 0.5 + E(W) * 0.5 = 0.5 + 0.5 = 1 $$
+
+In option 1 we have:
+
+$$E(W) = \frac{1}{\lambda - \mu} = \frac{1}{8 - 6} = \frac{1}{2} = 0.5$$
 
 ```{r}
-num <- function(n) {
+normal_queue <- function(n) {
   M_1 <- 6
   M_2 <- 8
   inter <- rexp(n, M_1)
@@ -379,9 +439,36 @@ num <- function(n) {
   return(mean(output - arr))
 }
 
-mean(replicate(1000, num(1000)))
+mean(replicate(100, normal_queue(10000)))
 ```
+The result is very close to 0.5 confirming our analytical results.
 
+```{r}
+split_queue <- function(n) {
+  M_1 <- 6
+  M_2 <- 4
+  inter <- rexp(n, M_1)
+  arr <- cumsum(inter)
+  prob <- rbinom(n, 1, 0.5)
+  arr_blue <- arr[prob == 0]
+  arr_red <- arr[prob == 1]
+  service_blue <- rexp(n, M_2)
+  service_red <- rexp(n, M_2)
+  output_blue <- arr_blue[1] + service_blue[1]
+  output_red <- arr_red[1] + service_red[1]
+  for (i in 1:(length(arr_blue) - 1)) {
+      output_blue <- c(output_blue, max(output_blue[i], arr_blue[i + 1]) + service_blue[i + 1])
+  }
+  for (i in 1:(length(arr_red) - 1)) {
+      output_red <- c(output_red, max(output_red[i], arr_red[i + 1]) + service_red[i + 1])
+  }
+  
+  return(0.5 * mean(output_blue - arr_blue) + 0.5 * mean(output_red - arr_red))
+}
+
+mean(replicate(100, split_queue(10000)))
+```
+The result is very close to 1 confirming our analytical results.
 
 ```{r, eval=FALSE}
  opt <- function(t){
@@ -410,12 +497,9 @@ mean(replicate(1000, num(1000)))
 x= replicate(1000, opt(600)) ## simulation by large number
 b = seq(-1,max(x)+1, by=1)
 hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
-p=1-0.75
-mean(x) - (  (1-p)/p )
-testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
-          ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
-          sum(x==4)/1000 - dgeom(4,p))
-testt1
+
+testt1  ## find the stationary distribution of the first option
+
 opt2 <- function(t){
   inter = rexp(1,6)
   arr = inter
@@ -431,13 +515,13 @@ opt2 <- function(t){
   arrred <- 0
   arrblue <- 0
   for (i in 1:L) {
- 
+    
     if(colitem[i] == 0){arrred <- c(arrred, arr[i])}
     if(colitem[i] == 1){arrblue <- c(arrblue, arr[i])}
   }     
-    arrred
-    arrblue
-    
+  arrred
+  arrblue
+  
   Lr = length(arrred)
   servicered = rexp(Lr,4)
   
@@ -455,35 +539,38 @@ opt2 <- function(t){
     if(arrblue[m + 1] < outputblue[m]){outputblue <- c(outputblue, outputblue[m] + serviceblue[m + 1])}
     if(arrblue[m + 1] > outputblue[m]){outputblue <- c(outputblue, arrblue[m + 1] + serviceblue[m + 1])}
   }
-  outputblue <- outputblue[-L]  
+  outputblue <- outputblue[-L] 
   
+
   nr = sum(outputred > t)
   nb = sum(outputblue > t)
-  
-  c(nr,nb)
+
+  n = (nr+nb)
 }
 
-
-y= replicate(1000, opt2(600)) ## simulation by large number
-y1 = y[1,]
-y2 = y[2,]
+y= replicate(500, opt2(600)) ## simulation by large number
 
 a = seq(-1,max(y)+1, by=1)
-b1 = seq(-1,max(y1)+1, by=1)
-b2 = seq(-1,max(y2)+1, by=1)
 
-hist(y, prob=TRUE, breaks=a)
-hist(y1, prob=TRUE, breaks=b1) ## draw a diagrom to assume the distribution
-hist(y2, prob=TRUE, breaks=b1)
+hist(y, prob=TRUE, breaks=a) ## negative binormial (sum of two geometric distribution)
 
-q=1-0.75
-mean(y) - ( (1-q)/q )
-testt2= c(sum(y==0)/1000 - dgeom(0,q),sum(y==1)/1000 - dgeom(1,q)
-          ,sum(y==2)/1000 - dgeom(2,p),sum(y==3)/1000 - dgeom(3,q),
-          sum(y==4)/1000 - dgeom(4,q))
-testt2
+mean(x)  ## average items in queue in the first option
+mean(y)  ## average items in queue in the second option
 
 ```
+* Compared with mean value of items in two options, the option2 have value around 7, and option1
+have value around 3. These value stands for the average number of items in the corresponding 
+queues. From the value we can see that option2 have more items in it on average.
+
+* From items/customers perspective, the option1 definitely is better. 
+Since the items/customers' arrival time is the same in two options, we need only to consider the 
+time of waiting they spend on the queue. To compare the average items/customers in the queue,
+we can see clearly the time items/customers spend on waiting.
+Although the second options split the queue into two, on average, there are more items/customers 
+in the queue which means the effectiveness is not as good as the first option. Therefore, 
+items/customers spend more time waiting in option2.
+Therefore, the option with one queue is better for items/customers.
+
 
 # Endnotes
 
