@@ -46,45 +46,68 @@ Use the Metropolis algorithm to sample from $\mu$, so that you do not need to kn
 
 
 ## Answer:
+## 1.1
 * We can use a Standard Series convergence test called the Integral Test (learnt in MATH0004 Analysis 2 in 1st year at UCL), which looks at the series as an integral (an integral is the continuous version of a discrete sum) from 1 to $\infty$. If this definite integral converges then the series converges:
 $$\int_{1}^{\infty} \frac{1}{x^{3}} \,dx \ = \lim_{t \to \infty}\int_{1}^{t} \frac{1}{x^{3}} \,dx = \lim_{t \to \infty}  \frac{1}{-2x^{2}}\Biggr|_{x=1}^{x=t} = \frac{1}{2} < \infty $$
 The integral is less than $\infty$, thus $\zeta(3)$ is a convergent series as required.
 
-* From Week 9 Exercises in class, we were introduced to the Metropolis-Hastings algorithm. 
+
+## 1.2
+* From Week 9 Exercises in class, we were introduced to the Metropolis-Hastings algorithm. Here we are sampling from $\mu(n) = \frac{1}{\zeta(3)n^3}$ and we do not know the value of the constant $\zeta(3)$. With the Metropolis-Hastings algorithm we select a proposal distribution $Q$, where $Q(j|i)=Q_{ij}$, a transition matrix. 
+
+
+The Markov Chain we consider advance one step in the following way:
+* If we are at a state $i$, such that $X_n=i$, then we generate a random variable $Y=j$ with distribution $Q(\cdot|i)$.
+
+* Given that $Y=j$, we move to state $j$, so that $X_{n+1} = j$,  with probability
+$$ \alpha(j|i) = \min\big( \tfrac{{\pi}(j)}{{\pi}(i)} \cdot \tfrac{Q(i|j)}{Q(j|i)},1\big);$$ Where $\pi(n) = \frac{1}{n^3}, our target distribution to a constant.
+
+*  Otherwise, we stay in state $i$, so that $X_{n+1} = i$.
+
+If we do move to state $j$ the proposal is sometimes refered to as being *accepted*; we can actually have some freedom to choose $\alpha$, and the choice above is sometimes referred to as the Metropolis choice. The probability of moving between state $i$ to state $j$ can be simulated by a Bernoulli trial with the probability of $\alpha(j|i)$.
+These steps are repeated a large number of time to generate the Markov chain and obtain the sample distribution of $\mu(n)$, outlined in the code below.
+
+
+
 ```{r}
-## Aperys constant for verification
+## Aperys constant and the plot of points for the actual distribution for verification later 
 s = 0
+points = c()
 for (i in 1:1000){
   s <- s + 1/(i^3)
-  
 }
-s
+for (x in 1:10){
+  points <- c(points, 1/(s*(x^3)))
+}
 
-#Construction of Metropolis algorithm from week 9 exercises
 
-pi <- function(x){ #h function is the target distribution we have up to a constant
+#Construction of Metropolis algorithm based off week 9 exercises
+pi <- function(n){ #pi function is the target distribution we have up to a constant
  z=0
-  if(x >0){z = 1/(x^3)} #target distribution up to a constant
+  if(n >0 && n == floor(n)){z = 1/(n^3)} #target distribution, as it is a discrete distribution for positive integers, we ensure the input is this
  z
   }
 
 
-Yq <- function(x){ #Yq function calculates the proposal distribution for each x
-   y= rnorm(1,x,1) #proposal distribution
-y
+Yq <- function(x){   #Yq function calculates the proposal distribution for each x
+   y= 1 + rgeom(1,x)     #As we are dealing with a discrete distribution, a good idea would be to use a discrete distribution for our proposed distribution Q. Here, we shall                            use the geometric distribution as it only outputs positive integers and can help us explore higher states than our initial due to its unboundness.
+ y
 }
 
-alpha <- function(j,i){ #alpha function works out the probability of moving from state i to  state j
-m=min( c( pi(j)/pi(i), 1 ))  #comparison of the proposal distribution ratio and 1
-m
+alpha <- function(j,i){ #alpha function works out the probability of moving from state i to state j
+  prob_i = 1/(2*i)  #Here, i is the state of the current markov chain with the target distribution and j is state of the next potential step of the markov chain with the target   distribution.
+  prob_j = 1/(2*j)    # The ratios are calculated and the minimum is taken with 1 to in find the probability #of moving from state i to state j
+  m=min( c( pi(j)/pi(i)*dgeom(i-1, prob_j)/dgeom(j-1, prob_i), 1)) 
+  m          
 }
 
-metro <- function(n){ #the metropolis-hastings algorithm function combining everything together to find the samples of the mu distribution
-  x=10
-  for(k in 1:n){
-    i = x[length(x)]
-    j = Yq(i)
-    p = alpha(j,i) #the probability of moving from state i to state j
+metro <- function(N){ #the Metropolis algorithm function combining everything together to find the samples of the mu distribution, simulates the Markov chain up to N
+  x=1                 #During each iteration, j is calculated from the geometric distribution using the state i. The probability of acceptance is calculated by the alpha 
+  for(k in 1:N){      #function and is then used in a Bernoulli trial (as indicated in the description of the algorithm) to represent the probability of that the next step of 
+    i = x[length(x)]  #the Markov chain is j. This is then repeated for the each time step.
+    prob_i = 1/(2*i)
+    j = Yq(prob_i)
+    p = alpha(j,i) 
     x = c(x,i)
       if ( rbinom(1,1,p)==1 ) {
       x[length(x)] <- j
@@ -94,12 +117,15 @@ metro <- function(n){ #the metropolis-hastings algorithm function combining ever
 }
 
 
-z = replicate(1000, metro(1000)) #run the algorithm 1000 times to converge to the target distribution
+n = replicate(1000, metro(1000)) #run the algorithm 1000 times to converge to the target distribution
 
-hist(z, prob=TRUE, breaks=100, to = 30) #plot of the distribution as probability histograms
-x= seq(0, 1, by =0.1)
-curve(1/(s*(x^3)), add=TRUE, to = 30) #the actual distribution as verification with Apery's constant
+#Comparison to actual distribution, hence the use of the probability histogram
 
+plot(points, col="red", xlab = "n", ylab= expression(mu(n)),  main="Sample distribution of Mu") #the actual distribution as verification with Apery's constant
+hist(n, prob=TRUE, breaks=500, xlim=c(0,10), add=TRUE) #plot of the distribution as probability histogram
+legend("topright", legend=c("Apery's constant distribution", "Sampling from Metropolis-Hastings"), col=c("gray", "red"), lty=c(1,1))
+
+#The curve of the actual distribution and the histogram have roughly the same shape, verifying by simulations that they are the same 
 ```
 
 
@@ -117,8 +143,10 @@ USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 ```{r}
 ## code to do here
 
-mean(z) 
-approx = (pi^2)/(6*mean(z))
+d= replicate(1000, metro(1000))
+t <-table(d) 
+print(t)
+approx = 1/(t[1]/1000^2* 1^3)
 approx
 ```
 
