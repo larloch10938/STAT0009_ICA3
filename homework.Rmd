@@ -459,12 +459,9 @@ The result is very close to 1 confirming our analytical results.
 x= replicate(1000, opt(600)) ## simulation by large number
 b = seq(-1,max(x)+1, by=1)
 hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
-p=1-0.75
-mean(x) - (  (1-p)/p )
-testt1= c(sum(x==0)/1000 - dgeom(0,p),sum(x==1)/1000 - dgeom(1,p)
-          ,sum(x==2)/1000 - dgeom(2,p),sum(x==3)/1000 - dgeom(3,p),
-          sum(x==4)/1000 - dgeom(4,p))
-testt1
+
+testt1  ## find the stationary distribution of the first option
+
 opt2 <- function(t){
   inter = rexp(1,6)
   arr = inter
@@ -480,13 +477,13 @@ opt2 <- function(t){
   arrred <- 0
   arrblue <- 0
   for (i in 1:L) {
- 
+    
     if(colitem[i] == 0){arrred <- c(arrred, arr[i])}
     if(colitem[i] == 1){arrblue <- c(arrblue, arr[i])}
   }     
-    arrred
-    arrblue
-    
+  arrred
+  arrblue
+  
   Lr = length(arrred)
   servicered = rexp(Lr,4)
   
@@ -504,35 +501,38 @@ opt2 <- function(t){
     if(arrblue[m + 1] < outputblue[m]){outputblue <- c(outputblue, outputblue[m] + serviceblue[m + 1])}
     if(arrblue[m + 1] > outputblue[m]){outputblue <- c(outputblue, arrblue[m + 1] + serviceblue[m + 1])}
   }
-  outputblue <- outputblue[-L]  
+  outputblue <- outputblue[-L] 
   
+
   nr = sum(outputred > t)
   nb = sum(outputblue > t)
-  
-  c(nr,nb)
+
+  n = (nr+nb)
 }
 
-
-y= replicate(1000, opt2(600)) ## simulation by large number
-y1 = y[1,]
-y2 = y[2,]
+y= replicate(500, opt2(600)) ## simulation by large number
 
 a = seq(-1,max(y)+1, by=1)
-b1 = seq(-1,max(y1)+1, by=1)
-b2 = seq(-1,max(y2)+1, by=1)
 
-hist(y, prob=TRUE, breaks=a)
-hist(y1, prob=TRUE, breaks=b1) ## draw a diagrom to assume the distribution
-hist(y2, prob=TRUE, breaks=b1)
+hist(y, prob=TRUE, breaks=a) ## negative binormial (sum of two geometric distribution)
 
-q=1-0.75
-mean(y) - ( (1-q)/q )
-testt2= c(sum(y==0)/1000 - dgeom(0,q),sum(y==1)/1000 - dgeom(1,q)
-          ,sum(y==2)/1000 - dgeom(2,p),sum(y==3)/1000 - dgeom(3,q),
-          sum(y==4)/1000 - dgeom(4,q))
-testt2
+mean(x)  ## average items in queue in the first option
+mean(y)  ## average items in queue in the second option
 
 ```
+* Compared with mean value of items in two options, the option2 have value around 7, and option1
+have value around 3. These value stands for the average number of items in the corresponding 
+queues. From the value we can see that option2 have more items in it on average.
+
+* From items/customers perspective, the option1 definitely is better. 
+Since the items/customers' arrival time is the same in two options, we need only to consider the 
+time of waiting they spend on the queue. To compare the average items/customers in the queue,
+we can see clearly the time items/customers spend on waiting.
+Although the second options split the queue into two, on average, there are more items/customers 
+in the queue which means the effectiveness is not as good as the first option. Therefore, 
+items/customers spend more time waiting in option2.
+Therefore, the option with one queue is better for items/customers.
+
 
 # Endnotes
 
