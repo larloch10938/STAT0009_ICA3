@@ -66,7 +66,7 @@ for (x in 1:10){
 
 
 #Construction of Metropolis algorithm based off week 9 exercises
-pi <- function(n){ #pi function is the target distribution we have up to a constant
+function_pi <- function(n){ #pi function is the target distribution we have up to a constant
  z=0
   if(n >0 && n == floor(n)){z = 1/(n^3)} #target distribution, as it is a discrete distribution for positive integers, we ensure the input is this
  z
@@ -82,7 +82,7 @@ Yq <- function(x){   #Yq function calculates the proposal distribution for each 
 alpha <- function(j,i){ #alpha function works out the probability of moving from state i to state j
   prob_i = 1/(2*i)  #Here, i is the state of the current markov chain with the target distribution and j is state of the next potential step of the markov chain with the target   distribution.
   prob_j = 1/(2*j)    # The ratios are calculated and the minimum is taken with 1 to in find the probability #of moving from state i to state j
-  m=min( c( pi(j)/pi(i)*dgeom(i-1, prob_j)/dgeom(j-1, prob_i), 1)) 
+  m=min( c( function_pi(j)/function_pi(i)*dgeom(i-1, prob_j)/dgeom(j-1, prob_i), 1)) 
   m          
 
 }
