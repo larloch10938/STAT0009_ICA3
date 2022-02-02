@@ -456,7 +456,7 @@ mean(replicate(100, split_queue(10000)))
 ```
 The result is very close to 1 confirming our analytical results.
 
-```{r, eval=FALSE}
+```{r}
  opt <- function(t){
   inter = rexp(1,6)
   arr = inter
@@ -484,7 +484,7 @@ x= replicate(1000, opt(600)) ## simulation by large number
 b = seq(-1,max(x)+1, by=1)
 hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
 
-testt1  ## find the stationary distribution of the first option
+## find the stationary distribution of the first option
 
 opt2 <- function(t){
   inter = rexp(1,6)
