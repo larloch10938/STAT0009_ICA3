@@ -115,26 +115,26 @@ legend("topright", legend=c("Sampling from Metropolis-Hastings","Apery's constan
 #The curve of the actual distribution and the histogram have roughly the same shape, verifying by simulations that they are the same 
 ```
 
+##1.3
+* To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$. Upon, trying this we didn't get close to Apery's constant.
+After, we thought of using the sampling distribution knowledge obtained in the previous part. We had the distribution approximated for all the positive integers, so we could take any of them, use the Law of Large numbers with the original distribution formula and rearrange to obtain an approximation of Apery's constant. To do this we can rearrange the formula of the mu distribution for Apery's constant and divide it by number of iterations (N) squared to get the approximation by Law of Large numbers. (The number of iterations is squared as it is N simulations each with a Markov chain with N time-steps)
 
-* To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$:
-$$\mathbb{E}(\mu(n))=\sum_{n=1}^{\infty} \frac{n}{\zeta(3)n^{3}} = \frac{1}{\xi(3)}\sum_{n=1}^{\infty} \frac{1}{n^{2}} = \frac{\pi^{2}}{\zeta(3)6} $$
-The sample mean for this distribution will be denoted by $M$, where
-$$ M = \frac{1}{N}\sum_{n=1}^{N}\mu(n),$$
-where $N$ is the number of simulations we will do (in the previous part $N=500$).
 
-So, to obtain Apery's constant,
-$\zeta(3) \approx \frac{\pi^{2}}{6M}.$
+For example, we could let $n=2$ and find out $\mu(2) from the simulations, N=1000 and rearrange the formula,
+$$ \zeta(3) \approx \frac{1}{2^{3}(1000)^2\mu(2)}$$
+
+We can use the same idea across the distribution. (e.g n=1, see below)
 
 USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
-```{r, eval=FALSE}
-## code to do here
-
-d= replicate(1000, metro(1000))
-t <-table(d) 
-print(t)
-approx = 1/(t[1]/1000^2* 1^3)
-approx
+```{r}
+## Process to get an approximation for Apery's constant with 1000 simulations from part Q1.2
+d= replicate(1000, metro(1000)) #metropolis algorithm ran for 1000 iterations
+t <-table(d) #table of the integer values and their corresponding occurrences
+aperys_for_two = 1/(t[2]/1000^2* 2^3) #computation for n=2 
+aperys_for_one = 1/(t[1]/1000^2* 1^3) #computation for n=1
+aperys_for_two # output
+aperys_for_one
 ```
 
 
