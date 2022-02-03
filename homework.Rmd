@@ -486,7 +486,10 @@ b = seq(-1,max(x)+1, by=1)
 hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
 
 ## find the stationary distribution of the first option
+mean(x) ## the average items in the queue of first option
+```
 
+```{r}
 opt2 <- function(t){
   inter = rexp(1,6)
   arr = inter
@@ -496,12 +499,12 @@ opt2 <- function(t){
     arr <- cumsum(inter)
   }
   L = length(inter)
-  
+  ## items painted red or blue with probability 0.5
   colitem = sample(c(0,1), length(arr), replace = TRUE, prob = c(0.5,0.5))
   
   arrred <- 0
   arrblue <- 0
-  for (i in 1:L) {
+  for (i in 1:L) { ## list the colored items with their arrival time
     
     if(colitem[i] == 0){arrred <- c(arrred, arr[i])}
     if(colitem[i] == 1){arrblue <- c(arrblue, arr[i])}
@@ -513,20 +516,19 @@ opt2 <- function(t){
   servicered = rexp(Lr,4)
   
   outputred <- arrred[1] + servicered[1]
-  for (j in 1:(Lr - 1)){ 
+  for (j in 1:(Lr - 1)){## whether the server's service time less than the customer arrival time  
     if(arrred[j + 1] < outputred[j]){outputred <- c(outputred, outputred[j] + servicered[j + 1])}
     if(arrred[j + 1] > outputred[j]){outputred <- c(outputred, arrred[j + 1] + servicered[j + 1])}
   }
-  outputred <- outputred[-L]  
   
   Lb = length(arrblue)
   serviceblue = rexp(Lb,4)  
   outputblue <- arrblue[1] + serviceblue[1]
-  for (m in 1:(Lb - 1)){  
+  for (m in 1:(Lb - 1)){## whether the server's service time less than the customer arrival time 
     if(arrblue[m + 1] < outputblue[m]){outputblue <- c(outputblue, outputblue[m] + serviceblue[m + 1])}
     if(arrblue[m + 1] > outputblue[m]){outputblue <- c(outputblue, arrblue[m + 1] + serviceblue[m + 1])}
   }
-  outputblue <- outputblue[-L] 
+  outputblue <- outputblue[-Lb] ## delete output[Lb]
   
 
   nr = sum(outputred > t)
@@ -535,25 +537,24 @@ opt2 <- function(t){
   n = (nr+nb)
 }
 
-y= replicate(500, opt2(600)) ## simulation by large number
+y= replicate(1000, opt2(600)) ## simulation by large number
 
 a = seq(-1,max(y)+1, by=1)
 
 hist(y, prob=TRUE, breaks=a) ## negative binormial (sum of two geometric distribution)
 
-mean(x)  ## average items in queue in the first option
 mean(y)  ## average items in queue in the second option
 
 ```
-* Compared with mean value of items in two options, the option2 have value around 7, and option1
-have value around 3. These value stands for the average number of items in the corresponding 
-queues. From the value we can see that option2 have more items in it on average.
+* Compared with mean value of items in two options, the option1 have value around 3, and option2
+have value around 6. These value stands for the average number of items in the corresponding queues. From the value we can see that option2 have doubled items in it on average.
 
 * From items/customers perspective, the option1 definitely is better. 
 Since the items/customers' arrival time is the same in two options, we need only to consider the 
 time of waiting they spend on the queue. To compare the average items/customers in the queue,
 we can see clearly the time items/customers spend on waiting.
-Although the second options split the queue into two, on average, there are more items/customers 
+
+*Although the second options split the queue into two, on average, there are more items/customers 
 in the queue which means the effectiveness is not as good as the first option. Therefore, 
 items/customers spend more time waiting in option2.
 Therefore, the option with one queue is better for items/customers.
