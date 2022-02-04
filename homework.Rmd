@@ -230,6 +230,7 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 
 #### 3.1
 ```{r}
+set.seed(100)
 #3.1
 #First we write a function to define a point on the upper circle.
 point <- function(){
@@ -268,7 +269,7 @@ The below code chunk will execute this in R.
 #3.2
 #First, we generated points for Upsilon 100 times and created a vector, "reps" to
 #store all the points.
-set.seed(123)
+set.seed(100)
 counter<- 0
 reps <- 0
 n <- 100
@@ -319,9 +320,34 @@ nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 #large sample size and the law of large numbers, we can say that this difference 
 #in the lambda values is evidence against the Upsilon being homogeneous. Therefore,
 #we have proven that Upsilon is a non-homogeneous Poisson point process.
+
 ```
 #### 3.3
-Prove analytically
+We know from the lecture notes in Week 9, that if the Poisson process $\Upsilon$ is homogeneous with rate $\lambda$ on [-1,1], we can express it as a Uniform random variable as follows. We define M as a Poisson random variable with mean $\lambda\times2$, and if $M=m$, we place $m$ independent uniformly distributed random variables, $X_1, X_2, ...,X_m,$ in the interval [-1,1].Then, the pdf of $X_i$ given $M=m$ would be $f(X_i|M=m)=1/2$ on $-1 \leq x_i\leq 1$. 
+
+The below plot is a graphical representation of the explanation that follows. To understand the explanation, we first explain the graph. It is the same plot as the one used in *3.1*, with a right-angled triangle drawn in. The 3 corners of the triangle are a point simulated for $\Gamma$ on the upper half of the unit circle, its projection onto the x-axis ($\Upsilon)$, and the origin. As this is a right-angled triangle, the hypotenuse is the radius of the circle, which equals 1 in our case. The angle (in orange) between the hypotenuse (in green) and the line segment from $X_i$ to the origin (in red) is a central angle, which we define as $\alpha$.
+
+```{r}
+#This code is purely to produce a graph that aids the explanation of this sub-question.
+set.seed(100)
+re <- replicate(rpois(1,2*pi),point())
+gamma <- re[,order(re[1,])]
+upsilon <- sort(re[1,])
+
+#This is the same code as in 3.1.
+curve(sqrt(1-x^2), from=-1, to=1 ,lty=2, xlab="x", ylab="y")
+points(re[1,], re[2,], xlim=c(-1.1,1.1), ylim=c(-0.1,1.1))
+abline(0,0,lty=2)
+points(re[1,],rep(0,length(re[1,])))
+
+#Adding the triangle and the central angle.
+segments(0,0,upsilon[1],0,col="red")
+segments(0,0,gamma[1,1],gamma[2,1],col="blue")
+segments(upsilon[1],0,gamma[1,1],gamma[2,1],col="green")
+curve(sqrt(0.04-x^2), from=-0.199999, to=-0.18 ,lty=2,col="orange",add=T)
+set.seed(NULL)
+```
+Now the explanation of this Poisson process, $\Upsilon$, is as follows. If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. Then, to express the density of $X_i$, we need to use a transformation. If $X_i=cos(\alpha_i)$, then $\alpha_i=arccos(x_i)$. Then, $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|$. Since $f_{\alpha_i}(\alpha_i)$ is already known and we can compute $\Big|\frac{d\alpha_i}{dx_i}\Big|$ as $\frac{1}{\sqrt{1-x_i^2}}$, $f(X_i|M=m)=\frac{1}{\pi\sqrt{1-x_i^2}}$. This is clearly not a pdf of a uniform distribution as it depends on the value of each $x_i$. Therefore, $\Upsilon$ cannot be a homogeneous Poisson process.
 
 ## 4.)  [15 points] The transition rate matrix
 
