@@ -168,13 +168,13 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 ## 2.1  
 The likelihood function of $\theta$ is $$L(\theta,k,w_i) = \prod_{i=1}^{n}\mathbf{1}[w_i >0]\frac{k w_i^{k-1}}{\theta}\exp[- \tfrac{w_i^{k}}{\theta }] = \mathbf{1}[w_{(1)} >0]k^n (\prod_{i=1}^{n} w_i^{k-1})\theta^{-n}\exp[- \tfrac{\sum_{i=1}^{n}w_i^{k}}{\theta }].$$ Then, if we define $t(W)$ as $\sum_{i=1}^{n}w_i^{k}$, we can rewrite the likelihood function as $$L(\theta,k,w_i) = \mathbf{1}[w_{(1)} >0]k^n (\prod_{i=1}^{n} w_i^{k-1})\theta^{-n}\exp[- \tfrac{t(W)}{\theta }]=g(t;\theta)*h(\underline{w}),$$ where $$g(t;\theta)=\theta^{-n}exp[-\tfrac{t(W)}{\theta}]$$ and $$h(\underline{w})=\mathbf{1}[w_{(1)}>0]k^n\prod_{i=1}^{n}w_i^{k-1}.$$ Using the factorisation theorem, we can see that  $t(W)=\sum_{i=1}^{n}w_i^{k}$ is indeed a sufficient statistic of $\theta$.
 
-##2.2 
+## 2.2 
 It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)\times L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]\times\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C \times \theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
-##2.3
+## 2.3
 In the previous expression we can identify $\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }]$ as the kernel of and Inverse Gamma distributions. Therefore, $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C = \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
-##2.4 and 2.5
+## 2.4 and 2.5
 ```{r}
 f <- function(x){                  #This is the posterior distribution known up to
   z=0                              #a constant factor, when a=2, b=3, n=3, x1=2, 
@@ -238,7 +238,7 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 
 ## Answer:
 
-#### 3.1
+## 3.1
 ```{r}
 set.seed(100)
 #3.1
@@ -265,7 +265,7 @@ abline(0,0,lty=2)
 points(re[1,],rep(0,length(re[1,])))
 ```
 
-#### 3.2
+## 3.2
 Remembering the last exercise (shop keeper) from ICA1, this problem can be set up similarly, using the law of large numbers. The law of large numbers tells us that $${\frac {1}{n} (X_1+...+X_n) \rightarrow E[X_1]= \lambda (s-r) \; \text{as} \; n \rightarrow \infty},$$ where (s-r) is the length of the interval which $\lambda$ is estimated for. Therefore, the estimator $\frac {1}{n(s-r)} (X_1+...+X_n)$ is consistent and unbiased for $\lambda$, the true rate of the Poisson process on [r,s]. With this estimator and the sample data, we give the corresponding estimate $\frac {1}{n(s-r)} (x_1+...+x_n)$ for $\lambda$.
 
 Then, if we repeat the point generating-process from *3.1* n-times for $\Upsilon$, and we let $X_1,...,X_n$ be random variables representing the number of points generated for each of the $n$ replicates, and given that we can assume that these random variables are independent, we can say that the model gives that $X_i$ is a Poisson random variable with mean $\lambda_i$.  
@@ -338,7 +338,7 @@ nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 #we have proven that Upsilon is a non-homogeneous Poisson point process.
 
 ```
-#### 3.3
+## 3.3
 We know from the lecture notes in Week 9, that if the Poisson process $\Upsilon$ is homogeneous with rate $\lambda$ on [-1,1], we can express it as a Uniform random variable as follows. We define M as a Poisson random variable with mean $\lambda\times2$, and if $M=m$, we place $m$ independent uniformly distributed random variables, $X_1, X_2, ...,X_m,$ in the interval [-1,1].Then, the pdf of $X_i$ given $M=m$ would be $f(X_i|M=m)=1/2$ on $-1 \leq x_i\leq 1$. 
 
 The below plot is a graphical representation of the explanation that follows. To understand the explanation, we first explain the graph. It is the same plot as the one used in *3.1*, with a right-angled triangle drawn in. The 3 corners of the triangle are a point simulated for $\Gamma$ on the upper half of the unit circle, its projection onto the x-axis ($\Upsilon)$, and the origin. As this is a right-angled triangle, the hypotenuse is the radius of the circle, which equals 1 in our case. The angle (in orange) between the hypotenuse (in green) and the line segment from $X_i$ to the origin (in red) is a central angle, which we define as $\alpha$.
@@ -438,6 +438,8 @@ Suppose you  have Poisson arrivals, with intensity $6$.  You are given the follo
 * [5 points] Run simulations to identify   the stationary distributions of the items in each of the two options.    Which option, on average, has more items in it?
 
 *  [5 points] Which option is better, from the items/customers perspective?  Explain, analytically.
+
+## Answer:
 
 The two options are very similar: both receive the arrivals at the same rate but serves them in a different way (i.e. as a $M(8)$ versus 2 $M(4)$). We can clearly see the results will be different.
 
