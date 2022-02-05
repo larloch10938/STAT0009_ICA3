@@ -120,7 +120,7 @@ legend("topright", legend=c("Sampling from Metropolis-Hastings","Apery's constan
 After, we thought of using the sampling distribution knowledge obtained in the previous part. We had the distribution approximated for all the positive integers, so we could take any of them, use the Law of Large numbers with the original distribution formula and rearrange to obtain an approximation of Apery's constant. To do this we can rearrange the formula of the mu distribution for Apery's constant and divide it by number of iterations (N) squared to get the approximation by Law of Large numbers. (The number of iterations is squared as it is N simulations each with a Markov chain with N time-steps)
 
 
-For example, we could let $n=2$ and find out $\mu(2) from the simulations, N=1000 and rearrange the formula,
+For example, we could let $n=2$ and find out $\mu(2)$ from the simulations, N=1000 and rearrange the formula,
 $$ \zeta(3) \approx \frac{1}{2^{3}(1000)^2\mu(2)}$$
 
 We can use the same idea across the distribution. (e.g n=1, see below)
