@@ -166,7 +166,7 @@ $$(w_1; k,\theta) \mapsto \mathbf{1}[w_1 >0]\frac{k w_1^{k-1}}{\theta}   \exp[  
 ```{r}
 f <- function(x){                  #This is the target distribution known up to
   z=0                              #a constant factor, when a=2, b=3, n=3, x1=2, 
-  if(x >0) {z=(x^(-5)*exp(-15/x))} #x2=4, x3=6, and k=1.
+  if(x >0) {z=(x^(-6)*exp(-15/x))} #x2=4, x3=6, and k=1.
   z
 }
 
