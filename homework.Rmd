@@ -365,11 +365,11 @@ You are given the the sample data from an irreducible  continuous-time Markov ch
 
 When $n$ is large, by using the law of large numbers, we can use the generated data to compute the average amount of time spent in a specific state. This is $h$.
 
-When $n$ is large, by using the law of large numbers, we can also compute the average probability of a jump from one state to the other. By combining this we can find an empiric definition of $M$.
+When $n$ is large, by using the law of large numbers, we can also compute the average probability of a jump from one state to the other. By combining this we can find an empiric definition of $M$, the probability transition matrix.
 
-Using the formula defined in our lessons (https://tsoo-math.github.io/ucl/continuous-timeMC.html) we can derive $q_{i,i}$.
+Using the formula defined in our lessons (https://tsoo-math.github.io/ucl/continuous-timeMC.html) we can derive $q_{i,i}$, the elements on the diagonal of $Q$.
 
-Combing $M$ and the derived $q_{i,i}$ will eventually result in $Q$.
+Combining $M$, the probability transition matrix, and the derived $q_{i,i}$ will eventually result in $Q$. The way these are compute is by inverting the formula $m_{i,j} = q_{i,j} /  -q_{i,i}$ once again derived in (https://tsoo-math.github.io/ucl/continuous-timeMC.html).
 
 ```{r, message=FALSE}
 library(tidyverse)
