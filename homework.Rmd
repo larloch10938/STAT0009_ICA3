@@ -115,7 +115,7 @@ legend("topright", legend=c("Sampling from Metropolis-Hastings","Apery's constan
 #The curve of the actual distribution and the histogram have roughly the same shape, verifying by simulations that they are the same 
 ```
 
-##1.3
+## 1.3
 * To estimate Apery's constant with the sampling from the Metropolis-Hastings algorithm, we could simulate the distribution for all $n>0, n \in\mathbb{Z^{+}}$ and then find the sample mean of the distribution which would equate to (using the knowledge derived by Euler that $\sum_{n=1}^{\infty} \frac{1}{n^{2}}=\frac{\pi^{2}}{6}$. Upon, trying this we didn't get close to Apery's constant.
 After, we thought of using the sampling distribution knowledge obtained in the previous part. We had the distribution approximated for all the positive integers, so we could take any of them, use the Law of Large numbers with the original distribution formula and rearrange to obtain an approximation of Apery's constant. To do this we can rearrange the formula of the mu distribution for Apery's constant and divide it by number of iterations (N) squared to get the approximation by Law of Large numbers. (The number of iterations is squared as it is N simulations each with a Markov chain with N time-steps)
 
@@ -124,8 +124,6 @@ For example, we could let $n=2$ and find out $\mu(2) from the simulations, N=100
 $$ \zeta(3) \approx \frac{1}{2^{3}(1000)^2\mu(2)}$$
 
 We can use the same idea across the distribution. (e.g n=1, see below)
-
-USE SAMPLE MEAN OR REGULAR MEAN FROM PART 2 OF QUESTION 1?
 
 ```{r}
 ## Process to get an approximation for Apery's constant with 1000 simulations from part Q1.2
@@ -365,9 +363,9 @@ You are given the the sample data from an irreducible  continuous-time Markov ch
 
 ## Answer:
 
-When $n$ is large we can use the generated data to compute the average amount of time spent in a specific state. This is $h$.
+When $n$ is large, by using the law of large numbers, we can use the generated data to compute the average amount of time spent in a specific state. This is $h$.
 
-When $n$ is large we can also compute the average probability of a jump from one state to the other. By computing this we can find an empiric definition of $M$.
+When $n$ is large, by using the law of large numbers, we can also compute the average probability of a jump from one state to the other. By combining this we can find an empiric definition of $M$.
 
 Using the formula defined in our lessons (https://tsoo-math.github.io/ucl/continuous-timeMC.html) we can derive $q_{i,i}$.
 
