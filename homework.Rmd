@@ -272,11 +272,15 @@ The below code chunk will execute this in R.
 set.seed(100)
 counter<- 0
 reps <- 0
-n <- 100
+# n will be selected as an arbitrary large number in accordance with the law of large numbers
+n <- 1000
 
 while (counter < n){
   counter <- counter+1
-  reps <- append(reps,replicate(rpois(1,2*pi),point())[1,])
+  elements <- replicate(rpois(1,2*pi),point())
+  if (length(elements) > 0){
+    reps <- append(reps, elements[1,])
+  }
 }
 
 reps <- reps[-1] #removing the initial value (0) of reps
