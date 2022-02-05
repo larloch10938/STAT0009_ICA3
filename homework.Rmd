@@ -58,7 +58,7 @@ These steps are repeated a large number of times (in accordance with Law of Larg
 apery= 0
 points = c()
 for (i in 1:1000){
-  apery <- s + 1/(i^3)
+  apery <- apery + 1/(i^3)
 }
 for (x in 1:10){
   points <- c(points, 1/(apery*(x^3)))
@@ -75,23 +75,22 @@ function_pi <- function(n){ #pi function is the target distribution we have up t
 
 
 Yq <- function(x){      #Yq function calculates the proposal distribution for each x
-   y= 1 + rgeom(1,x)    #As we are dealing with a discrete distribution, a good idea would be to use a discrete distribution for our proposed distribution Q. 
- y                      #Here, we shall use the geometric distribution as it only outputs positive integers and can help us explore higher states
-                        #than our initial state due to its unboundness.
+   y= 1 + rgeom(1,x)    #As we are dealing with a discrete distribution, a good  
+ y                      #idea would be to use a discrete distribution for our proposed distribution Q. Here, we shall use the geometric distribution as it only outputs positive integers and can help us explore higher states than our initial state due to its unboundness.
 }
 
 
 alpha <- function(j,i){  #alpha function works out the probability of moving from state i to state j
-  prob_i = 1/(2*i)       #Here, i is the state of the current markov chain with the target distribution and j is state
-  prob_j = 1/(2*j)       #of the next potential step of the markov chain with the target distribution. The ratios are calculated and the minimum is taken with 1 to find the                            probability of moving from state i to state j
+  prob_i = 1/(2*i)  #Here, i is the state of the current markov chain with the target distribution and j is state
+  prob_j = 1/(2*j)  #of the next potential step of the markov chain with the target distribution. The ratios are calculated and the minimum is taken with 1 to find the probability of moving from state i to state j.
   m=min(c( function_pi(j)/function_pi(i)*dgeom(i-1, prob_j)/dgeom(j-1, prob_i), 1)) 
   m          
 
 }
 
 metro <- function(N){ #the Metropolis algorithm function combines everything together to find the samples of the mu distribution, which will simulate the Markov chain up to N
-  x=1                 #During each iteration, j is calculated from the geometric distribution using the state i. The probability of acceptance is calculated by the alpha                            function.
-  for(k in 1:N){      # This is then used in a Bernoulli trial (as indicated in the description of the algorithm) to represent the probability of that the next step of the                          Markov chain is j. This is then repeated for the each time step.
+  x=1     #During each iteration, j is calculated from the geometric distribution using the state i. The probability of acceptance is calculated by the alpha function.
+  for(k in 1:N){ #This is then used in a Bernoulli trial (as indicated in the description of the algorithm) to represent the probability of that the next step of the Markov chain is j. This is then repeated for the each time step.
     i = x[length(x)]  
     prob_i = 1/(2*i)
     j = Yq(prob_i)
@@ -111,7 +110,7 @@ n = replicate(1500, metro(1500)) #run the algorithm 1500 times to converge to th
 
 X= seq(1, 10, by =1)
 
-hist(n, prob=TRUE, breaks=100, xlim=c(0,10), xlab = "n", ylab= expression(mu(n)),  main="Sample distribution of Mu")  #plot of the distribution as probability histogram
+hist(n, prob=TRUE, breaks=500, xlim=c(0,10), xlab = "n", ylab= expression(mu(n)),  main="Sample distribution of Mu")  #plot of the distribution as probability histogram
 lines(X, points, col="red",  lty= "longdash")   #the actual distribution as verification with Apery's constant
 legend("topright", legend=c("Sampling from Metropolis-Hastings","Apery's constant distribution"), col=c("gray", "red"), lty=c(1,1))
 
