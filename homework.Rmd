@@ -273,10 +273,12 @@ set.seed(100)
 counter<- 0
 reps <- 0
 n <- 100
-while(counter < n){
+
+while (counter < n){
   counter <- counter+1
   reps <- append(reps,replicate(rpois(1,2*pi),point())[1,])
 }
+
 reps <- reps[-1] #removing the initial value (0) of reps
 #Then, the function "nonhom" was defined, that splits the [-1,1] into 3 intervals at
 #x and y, and estimates lambda_i in each interval according to the method described 
