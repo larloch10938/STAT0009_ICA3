@@ -369,6 +369,7 @@ set.seed(NULL)
 ```
 
 Now the explanation of this Poisson process, $\Upsilon$, is as follows. 
+
 *  If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. 
 
 *  We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. 
