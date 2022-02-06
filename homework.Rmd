@@ -369,13 +369,20 @@ set.seed(NULL)
 ```
 
 Now the explanation of this Poisson process, $\Upsilon$, is as follows. 
-* If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. 
-* We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. 
-* Then, to express the density of $X_i$, we need to use a transformation. 
-* If $X_i=cos(\alpha_i)$, then $\alpha_i=arccos(x_i)$. 
-* Then, $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|$. 
-* $f_{\alpha_i}(\alpha_i)$ is already known and we can compute $\Big|\frac{d\alpha_i}{dx_i}\Big|$ as $\frac{1}{\sqrt{1-x_i^2}}$.
-* Therefore, we have $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|=\frac{1}{\pi\sqrt{1-x_i^2}}.$
+*  If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. 
+
+*  We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. 
+
+*  Then, to express the density of $X_i$, we need to use a transformation. 
+
+*  If $X_i=cos(\alpha_i)$, then $\alpha_i=arccos(x_i)$. 
+
+*  Then, $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|$. 
+
+*  $f_{\alpha_i}(\alpha_i)$ is already known and we can compute $\Big|\frac{d\alpha_i}{dx_i}\Big|$ as $\frac{1}{\sqrt{1-x_i^2}}$.
+
+*  Therefore, we have $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|=\frac{1}{\pi\sqrt{1-x_i^2}}.$
+
 This is clearly not a pdf of a homogeneous uniform distribution as it depends on the value of each $x_i$. Therefore, $\Upsilon$ cannot be a homogeneous Poisson process, it is indeed non-homogeneous.
 
 ## 4.)  [15 points] The transition rate matrix
