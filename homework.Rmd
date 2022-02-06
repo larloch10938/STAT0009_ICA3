@@ -1,4 +1,6 @@
 ---
+title: "STAT0009 ICA 3 - 2022"
+author: "Group 5"
 output:
   html_document: default
   pdf_document: default
@@ -172,7 +174,7 @@ The likelihood function of $\theta$ is $$L(\theta,k,w_i) = \prod_{i=1}^{n}\mathb
 It is known that the posterior distribution is proportional to the product of the prior distribution and the likelihood function. Therefore, $s(\theta|t(x))$ is proportional to $$\Pi(\Theta)\times L(\underline{x}|\Theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{-\alpha -1} e^{\tfrac{-\beta}{\theta}}  \mathbf{1}[\theta >0]\times\mathbf{1}[x_{(1)} >0]k^n (\prod_{i=1}^{n} x_i^{k-1})\theta^{-n}\exp[- \tfrac{t(x)}{\theta }]$$. This can be further simplified so that $$s(\theta|t(x)) = C \times \theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }],$$ where $\theta >0$ and $x=(x_1, x_2, \ldots, x_n)>0$ and $C$ is a proportionality constant that would make the expression integrate to 1 (so that it is a proper probability distribution function).
 
 ## 2.3
-In the previous expression we can identify $\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }]$ as the kernel of and Inverse Gamma distributions. Therefore, $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C = \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
+In the previous expression we can identify $\theta^{-(\alpha+n)-1}\exp[-\tfrac{\beta+t(x)}{\theta }]$ as the kernel of an Inverse Gamma distribution. Therefore, $s(\theta|t(x))$ follows an Inverse Gamma distribution with parameters $\alpha +n$ and $\beta + t(x)$. Therefore, the proportionality constant, C, must be such that $$C = \frac{[\beta + t(x)]^{\alpha+n}}{\Gamma(\alpha +n)}.$$
 
 ## 2.4 and 2.5
 ```{r}
@@ -239,6 +241,7 @@ Let $\Gamma$ be  a homogeneous Poisson point process of intensity $2$ on the upp
 ## Answer:
 
 ## 3.1
+The below code is to simulate $\Gamma$ and $\Upsilon$, and graphically display a sample realization of these point processes.
 ```{r}
 set.seed(100)
 #3.1
@@ -332,12 +335,10 @@ nonhom <- function(x,y){
 
 nonhom(-0.66,0.66) #this is lambda1, lambda2, and lambda3
 
-#From the results it is clear that three lambda values are different. Due to the
-#large sample size and the law of large numbers, we can say that this difference 
-#in the lambda values is evidence against the Upsilon being homogeneous. Therefore,
-#we have proven that Upsilon is a non-homogeneous Poisson point process.
-
 ```
+
+From the results it is clear that three lambda values are different from each other. Based on the large sample size and the law of large numbers, we can say that this difference in the lambda values is evidence against Upsilon being a homogeneous Poisson process. Therefore, we have proven that Upsilon is a non-homogeneous Poisson point process.
+
 ## 3.3
 We know from the lecture notes in Week 9, that if the Poisson process $\Upsilon$ is homogeneous with rate $\lambda$ on [-1,1], we can express it as a Uniform random variable as follows. We define M as a Poisson random variable with mean $\lambda\times2$, and if $M=m$, we place $m$ independent uniformly distributed random variables, $X_1, X_2, ...,X_m,$ in the interval [-1,1].Then, the pdf of $X_i$ given $M=m$ would be $f(X_i|M=m)=1/2$ on $-1 \leq x_i\leq 1$. 
 
@@ -356,14 +357,26 @@ points(re[1,], re[2,], xlim=c(-1.1,1.1), ylim=c(-0.1,1.1))
 abline(0,0,lty=2)
 points(re[1,],rep(0,length(re[1,])))
 
-#Adding the triangle and the central angle.
+#Adding the triangle and the central angle. This could be done for any point in
+#Upsilon, the first value (X1) was simply chosen randomly and for ease of computation.
+#The arguments would still be true for any other point.
+
 segments(0,0,upsilon[1],0,col="red")
 segments(0,0,gamma[1,1],gamma[2,1],col="blue")
 segments(upsilon[1],0,gamma[1,1],gamma[2,1],col="green")
 curve(sqrt(0.04-x^2), from=-0.199999, to=-0.18 ,lty=2,col="orange",add=T)
 set.seed(NULL)
 ```
-Now the explanation of this Poisson process, $\Upsilon$, is as follows. If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. Then, to express the density of $X_i$, we need to use a transformation. If $X_i=cos(\alpha_i)$, then $\alpha_i=arccos(x_i)$. Then, $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|$. Since $f_{\alpha_i}(\alpha_i)$ is already known and we can compute $\Big|\frac{d\alpha_i}{dx_i}\Big|$ as $\frac{1}{\sqrt{1-x_i^2}}$, $f(X_i|M=m)=\frac{1}{\pi\sqrt{1-x_i^2}}$. This is clearly not a pdf of a uniform distribution as it depends on the value of each $x_i$. Therefore, $\Upsilon$ cannot be a homogeneous Poisson process.
+
+Now the explanation of this Poisson process, $\Upsilon$, is as follows. 
+* If $M=m$, then we have $X_1,X_2,...X_m$ random variables, where $X_i$ can be expressed as $X_i=cos(\alpha_i)$ for $i=1,2,...m$, where $\alpha_i$ is the central angle as defined previously. 
+* We know that $\alpha_i$ is a random variable uniformly distributed on $[0,\pi]$, therefore  $f_{\alpha_i}(\alpha_i)= \frac{1}{\pi}$. 
+* Then, to express the density of $X_i$, we need to use a transformation. 
+* If $X_i=cos(\alpha_i)$, then $\alpha_i=arccos(x_i)$. 
+* Then, $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|$. 
+* $f_{\alpha_i}(\alpha_i)$ is already known and we can compute $\Big|\frac{d\alpha_i}{dx_i}\Big|$ as $\frac{1}{\sqrt{1-x_i^2}}$.
+* Therefore, we have $f(X_i|M=m)=f_{\alpha_i}(\alpha_i)\times \Big|\frac{d\alpha_i}{dx_i}\Big|=\frac{1}{\pi\sqrt{1-x_i^2}}.$
+This is clearly not a pdf of a homogeneous uniform distribution as it depends on the value of each $x_i$. Therefore, $\Upsilon$ cannot be a homogeneous Poisson process, it is indeed non-homogeneous.
 
 ## 4.)  [15 points] The transition rate matrix
 
