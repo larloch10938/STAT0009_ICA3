@@ -548,10 +548,8 @@ The result is very close to 1 confirming our analytical results.
 }
 x= replicate(1000, opt(600)) ## simulation by large number
 b = seq(-1,max(x)+1, by=1)
-hist(x, prob=TRUE, breaks=b) ## draw a diagrom to assume the distribution
-
-## find the stationary distribution of the first option
-mean(x) ## the average items in the queue of first option
+hist(x, prob=TRUE, breaks=b) ## find the stationary distribution of the first option
+mean(x) ## the average items in the system of first option
 ```
 
 ```{r}
@@ -608,19 +606,19 @@ a = seq(-1,max(y)+1, by=1)
 
 hist(y, prob=TRUE, breaks=a) ## negative binormial (sum of two geometric distribution)
 
-mean(y)  ## average items in queue in the second option
+mean(y)  ## average items in system in the second option
 
 ```
 * Compared with mean value of items in two options, the option1 have value around 3, and option2
-have value around 6. These value stands for the average number of items in the corresponding queues. From the value we can see that option2 have doubled items in it on average.
+have value around 6. These value stands for the average number of items in the corresponding systems. From the value we can see that option2 have doubled items in it on average.
 
 * From items/customers perspective, the option1 definitely is better. 
 Since the items/customers' arrival time is the same in two options, we need only to consider the 
-time of waiting they spend on the queue. To compare the average items/customers in the queue,
+time of waiting in the system. To compare the average items/customers in the system,
 we can see clearly the time items/customers spend on waiting.
 
 *Although the second options split the queue into two, on average, there are more items/customers 
-in the queue which means the effectiveness is not as good as the first option. Therefore, 
+in the system which means the effectiveness is not as good as the first option. Therefore, 
 items/customers spend more time waiting in option2.
 Therefore, the option with one queue is better for items/customers.
 
